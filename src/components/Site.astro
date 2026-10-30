@@ -1,6 +1,7 @@
 ---
 import Layout from './Layout.astro';
-import { person, ui, path, experience, projects, stack, education, buildCorpus } from '../data/content';
+import { person, ui, path, services, experience, projects, stack, education, buildCorpus } from '../data/content';
+import Replay from './Replay.astro';
 import { t, href } from '../lib/i18n';
 import retrieverCode from '../scripts/retriever.js?raw';
 
@@ -57,6 +58,26 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
           <div id="rag-results" aria-live="polite"></div>
           <p class="note" set:html={t(ui.demoNote)} />
         </div>
+      </div>
+    </section>
+
+    <section id="services" class="wrap block" aria-labelledby="services-title">
+      <div class="sec-head">
+        <h2 id="services-title" set:html={t(ui.servicesTitle)} />
+        <p set:html={t(ui.servicesLead)} />
+      </div>
+      <ol class="services-grid">
+        {services.map((s) => (
+          <li>
+            <h3 set:html={t(s.title)} />
+            <p set:html={t(s.text)} />
+            <p class="proof" set:html={t(s.proof)} />
+          </li>
+        ))}
+      </ol>
+      <div class="services-demo">
+        <h3 set:html={t({ en: 'Email triage with n8n and an LLM', fr: 'Tri d’e-mails avec n8n et un LLM' })} />
+        <Replay demo="email" />
       </div>
     </section>
 

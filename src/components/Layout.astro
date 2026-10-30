@@ -1,6 +1,7 @@
 ---
 import { person, ui } from '../data/content';
 import { t, href } from '../lib/i18n';
+import replayCode from '../scripts/replay.js?raw';
 import '../styles/global.css';
 
 interface Props {
@@ -43,6 +44,7 @@ const navPath = (id: string) => (home ? undefined : `/#${id}`);
       <a class="brand" href={home ? '#top' : href(lang, '/')} data-path={home ? undefined : '/'}><span class="glyph" aria-hidden="true">AD</span><span>{person.shortName}</span></a>
       <nav aria-label="Sections">
         <a href={nav('ask')} data-path={navPath('ask')} set:html={t(ui.nav.demo)} />
+        <a href={nav('services')} data-path={navPath('services')} set:html={t(ui.nav.services)} />
         <a href={nav('path')} data-path={navPath('path')} set:html={t(ui.nav.path)} />
         <a href={nav('work')} data-path={navPath('work')} set:html={t(ui.nav.work)} />
         <a href={nav('projects')} data-path={navPath('projects')} set:html={t(ui.nav.projects)} />
@@ -103,6 +105,7 @@ const navPath = (id: string) => (home ? undefined : `/#${id}`);
       update();
     })();
   </script>
+  <script is:inline set:html={replayCode}></script>
   <slot name="scripts" />
 </body>
 </html>

@@ -3,6 +3,8 @@ import Layout from './Layout.astro';
 import { person, ui, projects } from '../data/content';
 import { details } from '../data/details';
 import { t, href } from '../lib/i18n';
+import Replay from './Replay.astro';
+const demoKey: Record<string, 'migroo' | 'privasearch' | 'agent'> = { migroo: 'migroo', privasearch: 'privasearch', 'orange-money-agent': 'agent' };
 
 interface Props { lang: 'en' | 'fr'; slug: string }
 const { lang, slug } = Astro.props;
@@ -31,6 +33,14 @@ const title = `${p.title.en} · ${person.name}`;
       <div class="dg-scroll" tabindex="0" set:html={d.svg} />
       <p class="dg-hint" set:html={t(ui.diagramNote)} />
     </figure>
+
+    {demoKey[slug] && (
+      <section class="d-demo">
+        <h2 set:html={t(ui.demoSectionTitle)} />
+        <p set:html={t(ui.demoSectionLead)} />
+        <Replay demo={demoKey[slug]} />
+      </section>
+    )}
 
     <section class="d-grid">
       <div>

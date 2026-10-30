@@ -1,0 +1,36 @@
+---
+import { ui } from '../data/content';
+import { demos, kindLabel, type Step } from '../data/demos';
+import { t } from '../lib/i18n';
+
+interface Props { demo: keyof typeof demos }
+const { demo } = Astro.props;
+const scenarios = demos[demo];
+const body = (s: Step) => (typeof s.body === 'string' ? s.body : null);
+---
+<div class="replay" data-replay>
+  <div class="rp-bar">
+    <span class="rp-badge" set:html={t(ui.demoBadge)} />
+    <div class="rp-tabs" role="tablist">
+      {scenarios.map((sc, i) => (
+        <button type="button" role="tab" class="rp-tab" aria-selected={i === 0 ? 'true' : 'false'} data-i={i} set:html={t(sc.label)} />
+      ))}
+    </div>
+    <button type="button" class="rp-run" data-run set:html={t(ui.demoReplay)} />
+  </div>
+  {scenarios.map((sc, i) => (
+    <ol class="rp-steps" data-sc={i} hidden={i !== 0}>
+      {sc.steps.map((s) => (
+        <li class={`rp-step k-${s.kind}`}>
+          <div class="rp-head">
+            <span class="rp-kind" set:html={t(kindLabel[s.kind])} />
+            {s.meta && <span class="rp-meta" set:html={t(s.meta)} />}
+          </div>
+          {s.code
+            ? <pre><code>{body(s)}</code></pre>
+            : <p set:html={t(s.body)} />}
+        </li>
+      ))}
+    </ol>
+  ))}
+</div>

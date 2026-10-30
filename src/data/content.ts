@@ -16,6 +16,7 @@ export const person = {
 export const ui = {
   nav: {
     demo: { en: 'Ask', fr: 'Interroger' },
+    services: { en: 'Services', fr: 'Services' },
     path: { en: 'Path', fr: 'Parcours' },
     work: { en: 'Experience', fr: 'Expérience' },
     projects: { en: 'Projects', fr: 'Projets' },
@@ -28,8 +29,8 @@ export const ui = {
     fr: 'Des systèmes RAG qui citent leurs sources.',
   },
   heroLead: {
-    en: 'I’m Arona Ben Cherif Diatta, an AI / GenAI engineer based in Dakar. I build RAG pipelines and agents on top of clean, finely indexed data, because an answer is only as reliable as what was retrieved to write it.',
-    fr: 'Je suis Arona Ben Cherif Diatta, ingénieur IA / GenAI basé à Dakar. Je conçois des pipelines RAG et des agents qui reposent sur des données propres et finement indexées : une réponse ne vaut que ce qui a été retrouvé pour l’écrire.',
+    en: 'I’m Arona Ben Cherif Diatta, an AI / GenAI engineer based in Dakar. I build RAG pipelines, AI agents and business process automations on top of clean, finely indexed data, because an answer is only as reliable as what was retrieved to write it.',
+    fr: 'Je suis Arona Ben Cherif Diatta, ingénieur IA / GenAI basé à Dakar. Je conçois des pipelines RAG, des agents IA et des automatisations de processus métier qui reposent sur des données propres et finement indexées : une réponse ne vaut que ce qui a été retrouvé pour l’écrire.',
   },
   ctaContact: { en: 'Get in touch', fr: 'Me contacter' },
   ctaProjects: { en: 'See the projects', fr: 'Voir les projets' },
@@ -102,6 +103,19 @@ export const ui = {
   },
   passionCaption: { en: 'My AI legends, illustrated.', fr: 'Mes légendes de l’IA, en illustration.' },
   passionAlt: { en: 'Illustration of three AI pioneers standing together', fr: 'Illustration de trois pionniers de l’IA côte à côte' },
+  servicesTitle: { en: 'What I do for business teams', fr: 'Ce que je fais pour les métiers' },
+  servicesLead: {
+    en: 'Retrieval is one tool among others. Most of the value comes from finding where a team loses time, then choosing the lightest thing that fixes it: an automation, a search engine or an agent.',
+    fr: 'Le RAG est un outil parmi d’autres. L’essentiel de la valeur vient de repérer où une équipe perd du temps, puis de choisir la solution la plus légère qui règle le problème : une automatisation, un moteur de recherche ou un agent.',
+  },
+  demoBadge: { en: 'Demo · fictional data', fr: 'Démo · données fictives' },
+  demoRun: { en: 'Run', fr: 'Lancer' },
+  demoReplay: { en: 'Run again', fr: 'Relancer' },
+  demoSectionTitle: { en: 'Try it', fr: 'Essayer' },
+  demoSectionLead: {
+    en: 'A replay of typical runs, with fictional documents, accounts and tools. Nothing here touches real data.',
+    fr: 'La rediffusion d’exécutions types, avec des documents, comptes et outils fictifs. Rien ici ne touche à des données réelles.',
+  },
   howItWorks: { en: 'See how it works', fr: 'Voir le fonctionnement' },
   backHome: { en: 'Back to the portfolio', fr: 'Retour au portfolio' },
   stepsTitle: { en: 'How it works', fr: 'Fonctionnement' },
@@ -115,6 +129,33 @@ export const ui = {
     personal: { en: 'Personal project', fr: 'Projet personnel' },
   },
 };
+
+export const services: { title: L; text: L; proof: L }[] = [
+  {
+    title: { en: 'Spot the friction', fr: 'Repérer les irritants' },
+    text: {
+      en: 'Sit with the business team, map the process and find the repetitive steps worth automating, before writing any code.',
+      fr: 'S’asseoir avec l’équipe métier, cartographier le processus et repérer les tâches répétitives qui méritent d’être automatisées, avant d’écrire la moindre ligne de code.',
+    },
+    proof: { en: 'Scoped internal GenAI use cases with business teams.', fr: 'Cadrage de cas d’usage GenAI internes avec les équipes métier.' },
+  },
+  {
+    title: { en: 'Automate with n8n and LLMs', fr: 'Automatiser avec n8n et les LLM' },
+    text: {
+      en: 'Wire the existing tools together and add an LLM where judgement is needed: sorting, extracting, routing.',
+      fr: 'Relier les outils existants et ajouter un LLM là où il faut du jugement : trier, extraire, router.',
+    },
+    proof: { en: 'Prototyped automatic email classification with n8n and an LLM.', fr: 'Prototype de classification automatique d’e-mails avec n8n et un LLM.' },
+  },
+  {
+    title: { en: 'Deploy agents and search', fr: 'Déployer agents et recherche' },
+    text: {
+      en: 'When a task needs several steps or a lot of documents, build an agent that uses tools, or a search engine that cites its sources.',
+      fr: 'Quand une tâche demande plusieurs étapes ou beaucoup de documents, construire un agent qui utilise des outils, ou un moteur de recherche qui cite ses sources.',
+    },
+    proof: { en: 'ReAct agent over MCP tools; Migroo and PrivaSearch for retrieval.', fr: 'Agent ReAct sur des outils MCP ; Migroo et PrivaSearch pour la recherche.' },
+  },
+];
 
 export const path = [
   {
@@ -357,7 +398,7 @@ export const stack: { group: L; items: string[]; note?: L }[] = [
   },
   {
     group: { en: 'LLMs & agents', fr: 'LLM & agents' },
-    items: ['GPT-4o', 'Ollama', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', 'Structured outputs', 'Evals'],
+    items: ['OpenAI (GPT)', 'Ollama', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', 'Structured outputs', 'Evals'],
   },
   {
     group: { en: 'Engineering', fr: 'Développement' },
@@ -365,7 +406,7 @@ export const stack: { group: L; items: string[]; note?: L }[] = [
   },
   {
     group: { en: 'Data', fr: 'Données' },
-    items: ['Talend Open Studio', 'pandas', 'Oracle', 'MySQL'],
+    items: ['Talend Open Studio', 'Apache Airflow', 'Google BigQuery', 'Snowflake', 'pandas', 'Oracle', 'MySQL'],
   },
   {
     group: { en: 'Evaluated', fr: 'Évalués' },
