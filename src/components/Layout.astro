@@ -1,0 +1,108 @@
+---
+import { person, ui } from '../data/content';
+import { t, href } from '../lib/i18n';
+import '../styles/global.css';
+
+interface Props {
+  lang: 'en' | 'fr';
+  title: string;
+  description: string;
+  home?: boolean;
+}
+const { lang, title, description, home = false } = Astro.props;
+// On the home page, nav links are in-page anchors; elsewhere they point back home.
+const nav = (id: string) => (home ? `#${id}` : href(lang, `/#${id}`));
+const navPath = (id: string) => (home ? undefined : `/#${id}`);
+---
+<!doctype html>
+<html lang={lang} data-lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/img/arona.webp" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232B3A9E'/%3E%3Ctext x='16' y='21.5' font-family='Arial,sans-serif' font-weight='800' font-size='14' letter-spacing='-0.5' fill='%23F2C94C' text-anchor='middle'%3EAD%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script is:inline set:html={`(function(){var r=document.documentElement,l='${lang}';
+    if(l==='en'){try{if(localStorage.getItem('lang')==='fr')l='fr';}catch(e){}}
+    r.setAttribute('data-lang',l);r.setAttribute('lang',l);
+    try{var th=localStorage.getItem('theme');if(th==='dark'||th==='light')r.setAttribute('data-theme',th);}catch(e){}})();`}></script>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  {home && <a class="skip" href="#ask" set:html={t({ en: 'Skip to the demo', fr: 'Aller à la démo' })} />}
+
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href={home ? '#top' : href(lang, '/')} data-path={home ? undefined : '/'}><span class="glyph" aria-hidden="true">AD</span><span>{person.shortName}</span></a>
+      <nav aria-label="Sections">
+        <a href={nav('ask')} data-path={navPath('ask')} set:html={t(ui.nav.demo)} />
+        <a href={nav('path')} data-path={navPath('path')} set:html={t(ui.nav.path)} />
+        <a href={nav('work')} data-path={navPath('work')} set:html={t(ui.nav.work)} />
+        <a href={nav('projects')} data-path={navPath('projects')} set:html={t(ui.nav.projects)} />
+        <a href={nav('stack')} data-path={navPath('stack')} set:html={t(ui.nav.stack)} />
+        <a href={nav('contact')} data-path={navPath('contact')} set:html={t(ui.nav.contact)} />
+      </nav>
+      <button class="theme" id="theme-toggle" type="button" aria-label={ui.themeToggle[lang]} title={ui.themeToggle[lang]}>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="currentColor"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
+      </button>
+      <button class="lang" id="lang-toggle" type="button" set:html={t(ui.langSwitch)} />
+    </div>
+  </header>
+
+  <slot />
+
+  <footer class="wrap foot"><p set:html={t(ui.footer)} /></footer>
+
+  <script is:inline>
+    (function () {
+      var root = document.documentElement;
+      // Internal links follow the language on screen (/fr prefix or not).
+      function syncLinks() {
+        var fr = root.getAttribute('data-lang') === 'fr';
+        document.querySelectorAll('a[data-path]').forEach(function (a) {
+          a.setAttribute('href', (fr ? '/fr' : '') + a.getAttribute('data-path'));
+        });
+      }
+      syncLinks();
+      document.getElementById('lang-toggle').addEventListener('click', function () {
+        var next = root.getAttribute('data-lang') === 'en' ? 'fr' : 'en';
+        root.setAttribute('data-lang', next);
+        root.setAttribute('lang', next);
+        try { localStorage.setItem('lang', next); } catch (e) {}
+        // Keep the address in sync so a copied link opens in the language on screen.
+        try {
+          var base = location.pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
+          history.replaceState(null, '', (next === 'fr' ? '/fr' + base : base) + location.hash);
+        } catch (e) {}
+        syncLinks();
+        document.dispatchEvent(new Event('langchange'));
+      });
+      document.getElementById('theme-toggle').addEventListener('click', function () {
+        var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var next = cur === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+      // Reading progress bar under the header.
+      var bar = document.getElementById('progress-bar'), ticking = false;
+      function update() {
+        var h = document.documentElement.scrollHeight - innerHeight;
+        bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scrollY / h) : 0) + ')';
+        ticking = false;
+      }
+      addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      addEventListener('resize', update);
+      update();
+    })();
+  </script>
+  <slot name="scripts" />
+</body>
+</html>

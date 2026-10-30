@@ -1,0 +1,67 @@
+---
+import Layout from './Layout.astro';
+import { person, ui, projects } from '../data/content';
+import { details } from '../data/details';
+import { t, href } from '../lib/i18n';
+
+interface Props { lang: 'en' | 'fr'; slug: string }
+const { lang, slug } = Astro.props;
+const d = details.find((x) => x.slug === slug)!;
+const p = projects.find((x) => x.id === d.projectId)!;
+const next = details[(details.indexOf(d) + 1) % details.length];
+const nextP = projects.find((x) => x.id === next.projectId)!;
+const title = `${p.title.en} · ${person.name}`;
+---
+<Layout lang={lang} title={title} description={d.lead[lang]}>
+  <main id="top" class="wrap detail">
+    <a class="back" href={href(lang, '/#projects')} data-path="/#projects" set:html={t(ui.backHome)} />
+
+    <header class="d-head">
+      <h1>{p.title.en}</h1>
+      <p class="d-sum" set:html={t(p.summary!)} />
+      <p class="chips">
+        {p.status && <span class={`status ${p.status}`} set:html={t(ui.status[p.status])} />}
+        {(p.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
+      </p>
+      <p class="d-lead" set:html={t(d.lead)} />
+    </header>
+
+    <figure class="d-figure">
+      <figcaption set:html={t(d.diagramTitle)} />
+      <div class="dg-scroll" tabindex="0" set:html={d.svg} />
+      <p class="dg-hint" set:html={t(ui.diagramNote)} />
+    </figure>
+
+    <section class="d-grid">
+      <div>
+        <h2 set:html={t(ui.stepsTitle)} />
+        <ol class="steps">
+          {d.steps.map((s) => (
+            <li>
+              <h3 set:html={t(s.title)} />
+              <p set:html={t(s.text)} />
+            </li>
+          ))}
+        </ol>
+      </div>
+      <aside>
+        <h2 set:html={t(ui.choicesTitle)} />
+        <ul class="paras">
+          {p.bullets.map((b) => <li><span set:html={t(b.text)} /></li>)}
+          {(d.notes ?? []).map((n) => <li><span set:html={t(n)} /></li>)}
+        </ul>
+        {d.example && (
+          <figure class="code">
+            <figcaption set:html={t(d.example.caption)} />
+            <pre><code>{d.example.code}</code></pre>
+          </figure>
+        )}
+      </aside>
+    </section>
+
+    <nav class="d-next" aria-label={ui.nextProject[lang]}>
+      <span set:html={t(ui.nextProject)} />
+      <a href={href(lang, `/projects/${next.slug}/`)} data-path={`/projects/${next.slug}/`}>{nextP.title.en}</a>
+    </nav>
+  </main>
+</Layout>

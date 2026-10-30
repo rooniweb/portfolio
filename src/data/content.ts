@@ -102,6 +102,12 @@ export const ui = {
   },
   passionCaption: { en: 'My AI legends, illustrated.', fr: 'Mes légendes de l’IA, en illustration.' },
   passionAlt: { en: 'Illustration of three AI pioneers standing together', fr: 'Illustration de trois pionniers de l’IA côte à côte' },
+  howItWorks: { en: 'See how it works', fr: 'Voir le fonctionnement' },
+  backHome: { en: 'Back to the portfolio', fr: 'Retour au portfolio' },
+  stepsTitle: { en: 'How it works', fr: 'Fonctionnement' },
+  choicesTitle: { en: 'Design choices', fr: 'Choix de conception' },
+  diagramNote: { en: 'Scroll sideways to see the whole diagram.', fr: 'Faites défiler horizontalement pour voir tout le schéma.' },
+  nextProject: { en: 'Next project', fr: 'Projet suivant' },
   passionLink: { en: 'Follow on LinkedIn', fr: 'Me suivre sur LinkedIn' },
   status: {
     pilot: { en: 'Pilot in progress', fr: 'Pilote en cours' },
@@ -155,6 +161,7 @@ export type Item = {
   summary?: L;
   bullets: { text: L; keywords?: string }[];
   links?: { label: L; url: string }[];
+  page?: string; // slug of the dedicated "how it works" page
 };
 
 export const experience: Item[] = [
@@ -228,6 +235,7 @@ export const experience: Item[] = [
 export const projects: Item[] = [
   {
     id: 'migroo',
+    page: 'migroo',
     title: { en: 'Migroo', fr: 'Migroo' },
     summary: {
       en: 'Document ingestion and indexing pipeline for enterprise RAG.',
@@ -275,6 +283,7 @@ export const projects: Item[] = [
   },
   {
     id: 'privasearch',
+    page: 'privasearch',
     title: { en: 'PrivaSearch', fr: 'PrivaSearch' },
     summary: {
       en: 'On-premise RAG search engine.',
@@ -293,6 +302,7 @@ export const projects: Item[] = [
   },
   {
     id: 'agent',
+    page: 'orange-money-agent',
     title: { en: 'Orange Money AI Agent', fr: 'Orange Money AI Agent' },
     summary: { en: 'ReAct agent over a sandboxed API.', fr: 'Agent ReAct sur une API sandbox.' },
     status: 'personal',
@@ -309,6 +319,7 @@ export const projects: Item[] = [
   },
   {
     id: 'revizia',
+    links: [{ label: { en: 'Open the app', fr: 'Ouvrir l’application' }, url: 'https://revizia-africas-future-learn.lovable.app/' }],
     title: { en: 'RéviZIA', fr: 'RéviZIA' },
     summary: { en: 'Generative-AI learning platform.', fr: 'Plateforme d’apprentissage par l’IA générative.' },
     bullets: [
