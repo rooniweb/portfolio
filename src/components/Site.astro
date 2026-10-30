@@ -1,0 +1,231 @@
+---
+import { person, ui, path, experience, projects, stack, education, buildCorpus, type L } from '../data/content';
+import retrieverCode from '../scripts/retriever.js?raw';
+import '../styles/global.css';
+
+interface Props { lang: 'en' | 'fr' }
+const { lang } = Astro.props;
+
+const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]);
+// Renders both languages; CSS shows the active one.
+const t = (o: L | string) =>
+  typeof o === 'string' ? esc(o) : `<span class="l-en">${esc(o.en)}</span><span class="l-fr">${esc(o.fr)}</span>`;
+
+const api = import.meta.env.PUBLIC_RAG_API ?? '';
+const data = JSON.stringify({ corpus: buildCorpus(), ui, api }).replace(/</g, '\\u003c');
+
+const title = `${person.name} · ${person.role[lang]}`;
+const description = ui.heroLead[lang];
+const suggestions = ui.demoSuggestions.en.map((en, i) => ({ en, fr: ui.demoSuggestions.fr[i] }));
+const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings', 'Qdrant', 'Retrieval', 'LLM context'];
+---
+<!doctype html>
+<html lang={lang} data-lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232B3A9E'/%3E%3Ctext x='16' y='22.5' font-family='Georgia,serif' font-size='19' fill='%23F2C94C' text-anchor='middle'%3E%C2%B6%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <script is:inline set:html={`(function(){var r=document.documentElement,l=r.getAttribute('data-lang')||'${lang}';
+    // On the generic link (/), reuse the visitor's last choice; /fr/ always opens in French.
+    if(l==='en'){try{if(localStorage.getItem('lang')==='fr')l='fr';}catch(e){}}
+    r.setAttribute('data-lang',l);r.setAttribute('lang',l);})();`}></script>
+  <a class="skip" href="#ask" set:html={t({ en: 'Skip to the demo', fr: 'Aller à la démo' })} />
+
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="#top"><span class="glyph" aria-hidden="true">¶</span><span>{person.shortName}</span></a>
+      <nav aria-label="Sections">
+        <a href="#ask" set:html={t(ui.nav.demo)} />
+        <a href="#path" set:html={t(ui.nav.path)} />
+        <a href="#work" set:html={t(ui.nav.work)} />
+        <a href="#projects" set:html={t(ui.nav.projects)} />
+        <a href="#stack" set:html={t(ui.nav.stack)} />
+        <a href="#contact" set:html={t(ui.nav.contact)} />
+      </nav>
+      <button class="lang" id="lang-toggle" type="button" set:html={t(ui.langSwitch)} />
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap">
+      <p class="who"><span set:html={t(person.role)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(person.location)} /></p>
+      <h1 set:html={t(ui.heroTitle)} />
+      <p class="lead" set:html={t(ui.heroLead)} />
+      <p class="ctas">
+        <a class="btn primary" href={`mailto:${person.email}`} set:html={t(ui.ctaContact)} />
+        <a class="btn" href="#projects" set:html={t(ui.ctaProjects)} />
+        <a class="plain" href={person.github} rel="noopener">GitHub</a>
+        <a class="plain" href={person.linkedin} rel="noopener">LinkedIn</a>
+      </p>
+    </section>
+
+    <section id="ask" class="ask" aria-labelledby="ask-title">
+      <div class="wrap">
+        <div class="ask-head">
+          <h2 id="ask-title" set:html={t(ui.demoTitle)} />
+          <p set:html={t(ui.demoLead)} />
+        </div>
+        <div class="console">
+          <form id="rag-form" role="search">
+            <label for="rag-q" class="sr" set:html={t(ui.demoTitle)} />
+            <input id="rag-q" name="q" type="search" autocomplete="off" />
+            <button type="submit" set:html={t(ui.demoButton)} />
+          </form>
+          <div class="suggest">
+            <span class="try" set:html={t(ui.demoTry)} />
+            {suggestions.map((s) => <button type="button" data-suggest set:html={t(s)} />)}
+          </div>
+          <ol class="pipe" aria-hidden="true">
+            {ui.demoPipeline.map((p) => <li>{p}</li>)}
+          </ol>
+          <p id="rag-stats" class="stats" aria-live="polite"></p>
+          <div id="rag-results" aria-live="polite"></div>
+          <p class="note" set:html={t(ui.demoNote)} />
+        </div>
+      </div>
+    </section>
+
+    <section id="path" class="wrap block" aria-labelledby="path-title">
+      <div class="sec-head">
+        <h2 id="path-title" set:html={t(ui.pathTitle)} />
+        <p set:html={t(ui.pathLead)} />
+      </div>
+      <ol class="path">
+        {path.map((p) => (
+          <li>
+            <span class="when" set:html={t(p.when as any)} />
+            <h3 set:html={t(p.title)} />
+            <p set:html={t(p.text)} />
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section id="work" class="wrap block" aria-labelledby="work-title">
+      <div class="sec-head"><h2 id="work-title" set:html={t(ui.workTitle)} /></div>
+      {experience.map((it) => (
+        <article class="role">
+          <div class="role-meta">
+            <h3 set:html={t(it.title)} />
+            <p class="org" set:html={t(it.org!)} />
+            <p class="when">{it.when}</p>
+          </div>
+          <ol class="paras">
+            {it.bullets.map((b, i) => (
+              <li data-chunk={`${it.id}#${i + 1}`}><span class="pm" aria-hidden="true">¶{i + 1}</span><span set:html={t(b.text)} /></li>
+            ))}
+          </ol>
+        </article>
+      ))}
+    </section>
+
+    <section id="projects" class="wrap block" aria-labelledby="projects-title">
+      <div class="sec-head">
+        <h2 id="projects-title" set:html={t(ui.projectsTitle)} />
+        <p set:html={t(ui.projectsLead)} />
+      </div>
+      {projects.map((it, idx) => (
+        <article class={idx === 0 ? 'proj feature' : 'proj'}>
+          <div class="proj-meta">
+            <h3>{it.title.en}</h3>
+            <p class="sum" set:html={t(it.summary!)} />
+            <p class="chips">
+              {it.status && <span class={`status ${it.status}`} set:html={t(ui.status[it.status])} />}
+              {(it.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
+            </p>
+          </div>
+          <div class="proj-body">
+            {idx === 0 && (
+              <ol class="chain" aria-label="Migroo pipeline">
+                {migrooChain.map((s) => <li>{s}</li>)}
+              </ol>
+            )}
+            <ol class="paras">
+              {it.bullets.map((b, i) => (
+                <li data-chunk={`${it.id}#${i + 1}`}><span class="pm" aria-hidden="true">¶{i + 1}</span><span set:html={t(b.text)} /></li>
+              ))}
+            </ol>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section id="stack" class="wrap block two" aria-labelledby="stack-title">
+      <div>
+        <div class="sec-head"><h2 id="stack-title" set:html={t(ui.stackTitle)} /></div>
+        <dl class="stack">
+          {stack.map((s, i) => (
+            <div data-chunk={`stack#${i + 1}`}>
+              <dt set:html={t(s.group)} />
+              <dd>
+                {s.items.join(' · ')}
+                {s.note && <small set:html={t(s.note)} />}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div>
+        <div class="sec-head"><h2 set:html={t(ui.eduTitle)} /></div>
+        <ul class="edu">
+          {education.map((e, i) => (
+            <li data-chunk={`edu#${i + 1}`}>
+              <strong set:html={t(e.title)} />
+              <span set:html={t(e.org)} />
+              {e.link && <a href={e.link} rel="noopener" set:html={t(ui.verify)} />}
+            </li>
+          ))}
+          <li data-chunk="profile#1"><strong set:html={t({ en: 'Languages', fr: 'Langues' })} /><span set:html={t(ui.languages)} /></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <h2 id="contact-title" set:html={t(ui.contactTitle)} />
+        <p set:html={t(ui.contactLead)} />
+        <a class="mail" href={`mailto:${person.email}`}>{person.email}</a>
+        <p class="links">
+          <a href={person.linkedin} rel="noopener">LinkedIn</a>
+          <a href={person.github} rel="noopener">GitHub</a>
+          <span set:html={t(person.location)} />
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap foot"><p set:html={t(ui.footer)} /></footer>
+
+  <script type="application/json" id="rag-data" set:html={data}></script>
+  <script is:inline>
+    (function () {
+      var btn = document.getElementById('lang-toggle');
+      btn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-lang') === 'en' ? 'fr' : 'en';
+        root.setAttribute('data-lang', next);
+        root.setAttribute('lang', next);
+        try { localStorage.setItem('lang', next); } catch (e) {}
+        // Keep the address in sync so a copied link opens in the language on screen.
+        try {
+          var base = location.pathname.replace(/fr\/?(index\.html)?$/, '');
+          if (!/\/$/.test(base)) base += '/';
+          history.replaceState(null, '', (next === 'fr' ? base + 'fr/' : base) + location.hash);
+        } catch (e) {}
+        document.dispatchEvent(new Event('langchange'));
+      });
+    })();
+  </script>
+  <script is:inline set:html={retrieverCode}></script>
+</body>
+</html>
