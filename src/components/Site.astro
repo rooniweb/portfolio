@@ -29,7 +29,8 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232B3A9E'/%3E%3Ctext x='16' y='22.5' font-family='Georgia,serif' font-size='19' fill='%23F2C94C' text-anchor='middle'%3E%C2%B6%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232B3A9E'/%3E%3Ctext x='16' y='21.5' font-family='Arial,sans-serif' font-weight='800' font-size='14' letter-spacing='-0.5' fill='%23F2C94C' text-anchor='middle'%3EAD%3C/text%3E%3C/svg%3E" />
+  <meta property="og:image" content="/img/arona.webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -38,12 +39,13 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
   <script is:inline set:html={`(function(){var r=document.documentElement,l=r.getAttribute('data-lang')||'${lang}';
     // On the generic link (/), reuse the visitor's last choice; /fr/ always opens in French.
     if(l==='en'){try{if(localStorage.getItem('lang')==='fr')l='fr';}catch(e){}}
-    r.setAttribute('data-lang',l);r.setAttribute('lang',l);})();`}></script>
+    r.setAttribute('data-lang',l);r.setAttribute('lang',l);
+    try{var th=localStorage.getItem('theme');if(th==='dark'||th==='light')r.setAttribute('data-theme',th);}catch(e){}})();`}></script>
   <a class="skip" href="#ask" set:html={t({ en: 'Skip to the demo', fr: 'Aller à la démo' })} />
 
   <header class="top">
     <div class="wrap top-in">
-      <a class="brand" href="#top"><span class="glyph" aria-hidden="true">¶</span><span>{person.shortName}</span></a>
+      <a class="brand" href="#top"><span class="glyph" aria-hidden="true">AD</span><span>{person.shortName}</span></a>
       <nav aria-label="Sections">
         <a href="#ask" set:html={t(ui.nav.demo)} />
         <a href="#path" set:html={t(ui.nav.path)} />
@@ -52,12 +54,17 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
         <a href="#stack" set:html={t(ui.nav.stack)} />
         <a href="#contact" set:html={t(ui.nav.contact)} />
       </nav>
+      <button class="theme" id="theme-toggle" type="button" aria-label={ui.themeToggle[lang]} title={ui.themeToggle[lang]}>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="currentColor"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
+      </button>
       <button class="lang" id="lang-toggle" type="button" set:html={t(ui.langSwitch)} />
     </div>
   </header>
 
   <main id="top">
     <section class="hero wrap">
+      <div class="hero-text">
       <p class="who"><span set:html={t(person.role)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(person.location)} /></p>
       <h1 set:html={t(ui.heroTitle)} />
       <p class="lead" set:html={t(ui.heroLead)} />
@@ -67,6 +74,10 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
         <a class="plain" href={person.github} rel="noopener">GitHub</a>
         <a class="plain" href={person.linkedin} rel="noopener">LinkedIn</a>
       </p>
+      </div>
+      <figure class="portrait">
+        <img src="/img/arona.webp" width="640" height="640" alt={ui.photoAlt[lang]} />
+      </figure>
     </section>
 
     <section id="ask" class="ask" aria-labelledby="ask-title">
@@ -122,7 +133,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
           </div>
           <ol class="paras">
             {it.bullets.map((b, i) => (
-              <li data-chunk={`${it.id}#${i + 1}`}><span class="pm" aria-hidden="true">¶{i + 1}</span><span set:html={t(b.text)} /></li>
+              <li data-chunk={`${it.id}#${i + 1}`}><span set:html={t(b.text)} /></li>
             ))}
           </ol>
         </article>
@@ -143,6 +154,11 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
               {it.status && <span class={`status ${it.status}`} set:html={t(ui.status[it.status])} />}
               {(it.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
             </p>
+            {it.links && (
+              <p class="plinks">
+                {it.links.map((l) => <a href={l.url} rel="noopener" set:html={t(l.label)} />)}
+              </p>
+            )}
           </div>
           <div class="proj-body">
             {idx === 0 && (
@@ -152,7 +168,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
             )}
             <ol class="paras">
               {it.bullets.map((b, i) => (
-                <li data-chunk={`${it.id}#${i + 1}`}><span class="pm" aria-hidden="true">¶{i + 1}</span><span set:html={t(b.text)} /></li>
+                <li data-chunk={`${it.id}#${i + 1}`}><span set:html={t(b.text)} /></li>
               ))}
             </ol>
           </div>
@@ -190,6 +206,18 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
       </div>
     </section>
 
+    <section id="passion" class="wrap block passion" aria-labelledby="passion-title">
+      <div class="passion-text">
+        <div class="sec-head"><h2 id="passion-title" set:html={t(ui.passionTitle)} /></div>
+        <p set:html={t(ui.passionText)} />
+        <a href={person.linkedin} rel="noopener" set:html={t(ui.passionLink)} />
+      </div>
+      <figure class="legends">
+        <img src="/img/legends.webp" width="768" height="512" loading="lazy" alt={ui.passionAlt[lang]} />
+        <figcaption set:html={t(ui.passionCaption)} />
+      </figure>
+    </section>
+
     <section id="contact" class="contact" aria-labelledby="contact-title">
       <div class="wrap">
         <h2 id="contact-title" set:html={t(ui.contactTitle)} />
@@ -223,6 +251,14 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
           history.replaceState(null, '', (next === 'fr' ? base + 'fr/' : base) + location.hash);
         } catch (e) {}
         document.dispatchEvent(new Event('langchange'));
+      });
+      var tb = document.getElementById('theme-toggle');
+      tb.addEventListener('click', function () {
+        var root = document.documentElement;
+        var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var next = cur === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
       });
     })();
   </script>

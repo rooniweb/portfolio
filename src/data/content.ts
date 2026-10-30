@@ -90,9 +90,19 @@ export const ui = {
     fr: 'Ouvert aux postes et missions d’ingénierie IA / GenAI, à distance ou sur site. Le plus rapide est l’e-mail.',
   },
   footer: {
-    en: 'Built with Astro. The retriever above runs entirely in your browser.',
-    fr: 'Construit avec Astro. Le retriever ci-dessus tourne entièrement dans votre navigateur.',
+    en: '© 2026 Arona Ben Cherif Diatta. All rights reserved.',
+    fr: '© 2026 Arona Ben Cherif Diatta. Tous droits réservés.',
   },
+  themeToggle: { en: 'Switch light or dark theme', fr: 'Basculer entre thème clair et sombre' },
+  photoAlt: { en: 'Portrait of Arona Ben Cherif Diatta', fr: 'Portrait d’Arona Ben Cherif Diatta' },
+  passionTitle: { en: 'Beyond the job', fr: 'Au-delà du métier' },
+  passionText: {
+    en: 'AI is a passion before it is a job. I follow the field closely, from the pioneers of deep learning to today’s agents, and I share what I read and build on LinkedIn.',
+    fr: 'L’IA est une passion avant d’être un métier. Je suis le domaine de près, des pionniers du deep learning aux agents d’aujourd’hui, et je partage mes lectures et mes réalisations sur LinkedIn.',
+  },
+  passionCaption: { en: 'My AI legends, illustrated.', fr: 'Mes légendes de l’IA, en illustration.' },
+  passionAlt: { en: 'Illustration of three AI pioneers standing together', fr: 'Illustration de trois pionniers de l’IA côte à côte' },
+  passionLink: { en: 'Follow on LinkedIn', fr: 'Me suivre sur LinkedIn' },
   status: {
     pilot: { en: 'Pilot in progress', fr: 'Pilote en cours' },
     paused: { en: 'Prototype on hold', fr: 'Prototype en pause' },
@@ -144,7 +154,7 @@ export type Item = {
   tags?: string[];
   summary?: L;
   bullets: { text: L; keywords?: string }[];
-  link?: string;
+  links?: { label: L; url: string }[];
 };
 
 export const experience: Item[] = [
@@ -391,8 +401,8 @@ export function buildCorpus(): Chunk[] {
       out.push({
         id: `${it.id}#${i + 1}`,
         path: {
-          en: `${section.en} › ${it.title.en} › ¶${i + 1}`,
-          fr: `${section.fr} › ${it.title.fr} › ¶${i + 1}`,
+          en: `${section.en} › ${it.title.en} › item ${i + 1}`,
+          fr: `${section.fr} › ${it.title.fr} › point ${i + 1}`,
         },
         anchor,
         text: b.text,
