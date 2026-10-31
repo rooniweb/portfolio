@@ -7,7 +7,7 @@ export type Node = {
   label: L; sub?: L;
   kind?: 'step' | 'store' | 'accent' | 'io';
 };
-export type Group = { x: number; y: number; w: number; h: number; label: L; kind?: 'zone' | 'boundary' };
+export type Group = { x: number; y: number; w: number; h: number; label: L; kind?: 'zone' | 'boundary'; labelEnd?: boolean };
 export type Edge = { points: [number, number][]; label?: L; at?: [number, number]; dashed?: boolean };
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as Record<string, string>)[c]);
@@ -41,7 +41,7 @@ function node(n: Node) {
 function group(g: Group) {
   const cls = g.kind === 'boundary' ? 'dg-boundary' : 'dg-zone';
   return `<rect class="${cls}" x="${g.x}" y="${g.y}" width="${g.w}" height="${g.h}" rx="16"/>` +
-    text(g.x + 16, g.y + 24, g.label, 'dg-group', 'start');
+    (g.labelEnd ? text(g.x + g.w - 16, g.y + 24, g.label, 'dg-group', 'end') : text(g.x + 16, g.y + 24, g.label, 'dg-group', 'start'));
 }
 
 function edge(e: Edge) {

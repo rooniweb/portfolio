@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sogolon — démo NL-to-SQL</title>
+<meta name="description" content="Démonstration de Sogolon, assistante qui traduit une question métier en SQL : base SQLite fictive dans le navigateur, garde-fous rejoués en direct, aucun appel à un modèle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  // Follow the theme chosen on the portfolio (same site, same storage).
+  if (window.self !== window.top) document.documentElement.classList.add("integre");
+  try { var th = localStorage.getItem("theme"); if (th === "dark" || th === "light") document.documentElement.setAttribute("data-theme", th); } catch (e) {}
+</script>
+<style>
+  :root {
+    --fond: #f2f3f8;
+    --surface: #ffffff;
+    --surface-2: #e9ebf5;
+    --bord: #d8dbe8;
+    --texte: #12152e;
+    --texte-2: #565b78;
+    --accent: #2b3a9e;
+    --accent-fond: #e3e6f6;
+    --accent-texte: #1b2470;
+    --sur-accent: #ffffff;
+    --ok: #2f7d4f;
+    --ok-fond: #e6f3eb;
+    --ko: #b42318;
+    --ko-fond: #fdecea;
+    --code-fond: #151a36;
+    --code-texte: #e8eaf6;
+    --barre: #2b3a9e;
+    --rayon: 10px;
+    --police: "Schibsted Grotesk", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fond: #0e1126; --surface: #151a36; --surface-2: #1c2250; --bord: #2a3057;
+      --texte: #e8eaf6; --texte-2: #a0a6c6; --accent: #8f9dff; --accent-fond: #1c2250; --accent-texte: #c2c9ff; --sur-accent: #0e1126;
+      --ok: #5cc38a; --ok-fond: #17321f; --ko: #f07167; --ko-fond: #3a1c1a; --code-fond: #0a0d1f; --barre: #8f9dff;
+    }
+  }
+  :root[data-theme="dark"] {
+    --fond: #0e1126; --surface: #151a36; --surface-2: #1c2250; --bord: #2a3057;
+    --texte: #e8eaf6; --texte-2: #a0a6c6; --accent: #8f9dff; --accent-fond: #1c2250; --accent-texte: #c2c9ff; --sur-accent: #0e1126;
+    --ok: #5cc38a; --ok-fond: #17321f; --ko: #f07167; --ko-fond: #3a1c1a; --code-fond: #0a0d1f; --barre: #8f9dff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.5 var(--police); }
+  .page { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  h1 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+  .integre .retour { display: none; }
+  .retour { display: inline-block; margin-bottom: 14px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 span { color: var(--accent); }
+  .sous-titre { margin: 4px 0 0; color: var(--texte-2); }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--accent-fond); color: var(--accent-texte); border: 1px solid transparent; }
+  .badge.neutre { background: var(--surface-2); color: var(--texte-2); }
+  .carte { background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); padding: 18px; margin-bottom: 16px; }
+  .carte h2 { margin: 0 0 12px; font-size: 16px; }
+  .carte h2 small { font-weight: normal; color: var(--texte-2); font-size: 13px; margin-left: 6px; }
+  form.question { display: flex; gap: 8px; }
+  form.question input { flex: 1; min-width: 0; font: inherit; padding: 11px 14px; border: 1px solid var(--bord); border-radius: 8px; background: var(--fond); color: var(--texte); }
+  form.question input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--bord); background: var(--surface-2); color: var(--texte); padding: 9px 14px; }
+  button.principal { background: var(--accent); border-color: var(--accent); color: var(--sur-accent); font-weight: bold; }
+  button:disabled { opacity: .5; cursor: wait; }
+  .suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .suggestions button { font-size: 13px; padding: 5px 11px; border-radius: 999px; background: var(--fond); }
+  .suggestions button:hover { border-color: var(--accent); color: var(--accent-texte); }
+  .suggestions button.demo { border-style: dashed; }
+  .etat { min-height: 24px; margin: 4px 2px 14px; color: var(--texte-2); }
+  .etat strong { color: var(--texte); }
+  .etapes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 16px; list-style: none; padding: 0; }
+  .etapes li { font-size: 12px; padding: 8px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--bord); color: var(--texte-2); }
+  .etapes li b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  .etapes li.faite { border-color: var(--ok); color: var(--texte); }
+  .etapes li.faite b { color: var(--ok); }
+  .etapes li.echec { border-color: var(--ko); color: var(--texte); }
+  .etapes li.echec b { color: var(--ko); }
+  .deux { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
+  .deux > .carte { margin-bottom: 0; }
+  textarea { width: 100%; min-height: 220px; resize: vertical; font: 13px/1.55 var(--mono); padding: 12px; border-radius: 8px; border: 1px solid var(--bord); background: var(--code-fond); color: var(--code-texte); tab-size: 2; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
+  .note { font-size: 13px; color: var(--texte-2); }
+  .explication { font-size: 14px; background: var(--surface-2); border-radius: 8px; padding: 10px 12px; margin: 0 0 12px; }
+  ul.controles { list-style: none; margin: 0; padding: 0; }
+  ul.controles li { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--bord); font-size: 14px; }
+  ul.controles li:last-child { border-bottom: 0; }
+  .pastille { flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: bold; }
+  .pastille.ok { background: var(--ok-fond); color: var(--ok); }
+  .pastille.ko { background: var(--ko-fond); color: var(--ko); }
+  .message { border-radius: 8px; padding: 10px 12px; font-size: 14px; margin-top: 12px; }
+  .message.ko { background: var(--ko-fond); color: var(--ko); }
+  .message.info { background: var(--accent-fond); color: var(--accent-texte); }
+  .resultat { margin-top: 16px; }
+  .chiffre { font-size: 44px; font-weight: bold; color: var(--accent); line-height: 1.1; }
+  .barres { display: grid; gap: 6px; margin-bottom: 16px; }
+  .barre { display: grid; grid-template-columns: minmax(90px, 220px) 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+  .barre .lib { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--texte-2); }
+  .barre .piste { height: 14px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .barre .rempli { height: 100%; background: var(--barre); border-radius: 4px; }
+  .barre .val { font-variant-numeric: tabular-nums; min-width: 70px; text-align: right; }
+  .tableau { overflow-x: auto; border: 1px solid var(--bord); border-radius: 8px; max-height: 420px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--bord); white-space: nowrap; text-align: left; }
+  th { position: sticky; top: 0; background: var(--surface-2); font-weight: bold; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  details { background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon); padding: 14px 18px; margin-bottom: 12px; }
+  summary { cursor: pointer; font-weight: bold; }
+  details pre { white-space: pre-wrap; word-break: break-word; font: 12px/1.55 var(--mono); background: var(--code-fond); color: var(--code-texte); padding: 12px; border-radius: 8px; max-height: 480px; overflow: auto; }
+  .compteur { display: inline-block; margin: 10px 0 4px; font-size: 13px; padding: 4px 10px; border-radius: 6px; background: var(--ok-fond); color: var(--ok); font-weight: bold; }
+  .tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 12px; }
+  .tables div { border: 1px solid var(--bord); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .tables b { font-family: var(--mono); }
+  footer { margin-top: 28px; font-size: 13px; color: var(--texte-2); }
+  @media (max-width: 760px) {
+    .deux { grid-template-columns: 1fr; }
+    .etapes { grid-template-columns: repeat(3, 1fr); }
+    form.question { flex-direction: column; }
+    .barre { grid-template-columns: 90px 1fr auto; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="retour" href="/projects/sogolon/" target="_top">Retour au portfolio</a>
+  <header>
+    <div>
+      <h1><span>Sogolon</span> — de la question au SQL</h1>
+      <p class="sous-titre">Démo d'une assistante NL-to-SQL pour le pilotage commercial d'un opérateur télécom.</p>
+    </div>
+    <div class="badges">
+      <span class="badge">Données 100 % fictives</span>
+      <span class="badge">Aucun appel à un modèle en ligne</span>
+      <span class="badge neutre">SQLite dans votre navigateur</span>
+    </div>
+  </header>
+
+  <section class="carte">
+    <h2>Posez une question <small>en français, comme à un analyste</small></h2>
+    <form class="question" id="formulaire">
+      <input id="question" autocomplete="off" placeholder="Ex. : Encaissements de septembre 2026 par boutique" aria-label="Question">
+      <button class="principal" id="demander" disabled>Chargement de la base…</button>
+    </form>
+    <div class="suggestions" id="suggestions"></div>
+  </section>
+
+  <p class="etat" id="etat" aria-live="polite"></p>
+
+  <ol class="etapes" id="etapes">
+    <li data-e="question"><b>1. Question</b>en français</li>
+    <li data-e="contexte"><b>2. Contexte</b>schéma seul</li>
+    <li data-e="sql"><b>3. SQL</b>écrit par Sogolon</li>
+    <li data-e="garde"><b>4. Garde-fous</b>lecture seule</li>
+    <li data-e="exec"><b>5. Exécution</b>base fictive</li>
+    <li data-e="resultat"><b>6. Résultat</b>tableau, graphique</li>
+  </ol>
+
+  <div class="deux" id="zone-sql" hidden>
+    <section class="carte">
+      <h2>Requête SQL <small id="origine-sql"></small></h2>
+      <p class="explication" id="explication"></p>
+      <textarea id="sql" spellcheck="false" aria-label="Requête SQL"></textarea>
+      <div class="actions">
+        <button class="principal" id="executer">Exécuter ma version</button>
+        <button id="revenir">Revenir à la requête de Sogolon</button>
+        <span class="note">Reprenez la main : modifiez le SQL, les garde-fous s'appliquent toujours.</span>
+      </div>
+    </section>
+    <section class="carte">
+      <h2>Garde-fous <small>avant toute exécution</small></h2>
+      <ul class="controles" id="controles"></ul>
+      <div id="message-garde"></div>
+    </section>
+  </div>
+
+  <section class="carte resultat" id="zone-resultat" hidden>
+    <h2>Résultat <small id="meta-resultat"></small></h2>
+    <div id="graphique"></div>
+    <div class="tableau" id="tableau"></div>
+  </section>
+
+  <details id="prompt-details">
+    <summary>Ce que reçoit le modèle (et ce qu'il ne reçoit jamais)</summary>
+    <p class="note">Dans le prototype, ce texte part vers le fournisseur du modèle avec la question.
+      Il ne contient que des consignes, une base de connaissance métier et le schéma : tables, colonnes, types, commentaires.</p>
+    <span class="compteur" id="compteur-lignes">Lignes de données envoyées au modèle : 0</span>
+    <pre id="prompt"></pre>
+  </details>
+
+  <details>
+    <summary>La base fictive</summary>
+    <p class="note">Opérateur imaginaire, regénéré à l'identique à chaque chargement (graine fixe). Date du jour de la démo : <span id="date-jour"></span>.</p>
+    <div class="tables" id="tables"></div>
+  </details>
+
+  <footer>
+    Le prototype réel tourne sur une base de test MySQL, avec FastAPI, un service IA cloisonné du service données
+    et un vrai modèle de langage. Cette démo en rejoue le fonctionnement avec des requêtes pré-écrites.
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script src="sogolon-donnees.js"></script>
+<script src="sogolon-garde-fous.js"></script>
+<script src="sogolon-scenarios.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.SogolonDonnees, G = window.SogolonGardeFous, S = window.SogolonScenarios;
+  const $ = (id) => document.getElementById(id);
+  const nf = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+  let db = null, scenario = null;
+
+  const INSTRUCTIONS = `Tu es un expert SQL qui travaille sur la base commerciale d'un opérateur télécom.
+Tu traduis une question métier posée en français en UNE requête SQL.
+Règles :
+- Une seule requête, commençant par SELECT ou WITH. Jamais d'écriture ni de modification.
+- N'utilise que les tables et colonnes du schéma ci-dessous. N'invente aucun nom.
+- Lis les commentaires des colonnes : ils donnent la signification des codes et le format des dates.
+- Donne des alias de colonnes clairs, en français, sans accents ni espaces.
+- Si la question ne peut pas être traitée avec ce schéma, réponds uniquement :
+  -- IMPOSSIBLE : <raison courte>
+Format de réponse : uniquement la requête dans un bloc sql.`;
+
+  // ---------- Schéma lu depuis la base, comme information_schema dans le prototype ----------
+  function schemaTexte() {
+    const tables = db.exec("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name")[0].values.map((v) => v[0]);
+    return tables.map((t) => {
+      const com = D.COMMENTAIRES[t] || {};
+      const cols = db.exec(`PRAGMA table_info(${t})`)[0].values.map(([, nom, type]) =>
+        `  - ${nom} ${type}${com[nom] ? " -- " + com[nom] : ""}`);
+      return `TABLE ${t}${com[""] ? " -- " + com[""] : ""}\n${cols.join("\n")}`;
+    }).join("\n\n");
+  }
+
+  function promptComplet(question) {
+    return [INSTRUCTIONS, "Base de connaissance métier :\n" + D.CONNAISSANCES, "Schéma du périmètre :\n" + schemaTexte(),
+      "---- message ----", `Date du jour : ${D.DATE_DU_JOUR}`, `Question : ${question || "<question de l'utilisateur>"}`].join("\n\n");
+  }
+
+  // ---------- Rapprochement d'une question libre avec les questions connues ----------
+  const VIDES = new Set("le la les de des du d l un une et en par pour a au aux avec sur combien quel quelle quels quelles est sont nous avons y il ce qui que nombre".split(" "));
+  function normaliser(t) {
+    return t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  }
+  function mots(t) { return new Set(normaliser(t).split(" ").filter((m) => m && !VIDES.has(m)).map((m) => m.replace(/s$/, ""))); }
+  function rapprocher(question) {
+    const q = mots(question);
+    let meilleur = null, score = 0;
+    for (const s of S) {
+      if (normaliser(s.question) === normaliser(question)) return { s, score: 1 };
+      const m = mots(s.question);
+      const commun = [...q].filter((x) => m.has(x)).length;
+      const sc = commun / new Set([...q, ...m]).size;
+      if (sc > score) { score = sc; meilleur = s; }
+    }
+    return { s: meilleur, score };
+  }
+
+  // ---------- Affichage ----------
+  function etapes(faites, echec) {
+    document.querySelectorAll("#etapes li").forEach((li) => {
+      li.classList.toggle("faite", faites.includes(li.dataset.e));
+      li.classList.toggle("echec", li.dataset.e === echec);
+    });
+  }
+  function etat(html) { $("etat").innerHTML = html; }
+  function echapper(v) { return String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+  function format(v) { return typeof v === "number" ? nf.format(v) : v === null ? "—" : echapper(v); }
+
+  function afficherControles(res) {
+    $("controles").innerHTML = res.controles.map((c) =>
+      `<li><span class="pastille ${c.ok ? "ok" : "ko"}">${c.ok ? "✓" : "✕"}</span><span>${echapper(c.libelle)}${c.detail ? ` : <b>${echapper(c.detail)}</b>` : ""}</span></li>`).join("");
+    $("message-garde").innerHTML = res.ok ? "" : `<div class="message ko">Requête refusée : ${echapper(res.erreur)} Rien n'a été exécuté.</div>`;
+  }
+
+  function afficherResultat(colonnes, lignes, duree, sc) {
+    $("zone-resultat").hidden = false;
+    $("meta-resultat").textContent = `${lignes.length} ligne${lignes.length > 1 ? "s" : ""} · ${duree} ms`;
+    const numeriques = colonnes.map((_, i) => lignes.length > 0 && lignes.every((l) => l[i] === null || typeof l[i] === "number"));
+    // Graphique : chiffre clé ou barres (libellé + valeur) quand le résultat s'y prête
+    let graph = "";
+    const iVal = sc && sc.valeur ? colonnes.indexOf(sc.valeur) : -1;
+    if (lignes.length === 1 && colonnes.length === 1 && numeriques[0]) {
+      graph = `<div class="chiffre">${format(lignes[0][0])}</div><p class="note">${echapper(colonnes[0])}</p>`;
+    } else if (iVal >= 0 && lignes.length > 1 && lignes.length <= 40) {
+      const iLib = Math.max(0, colonnes.indexOf(sc.libelle));
+      const max = Math.max(...lignes.map((l) => l[iVal] || 0)) || 1;
+      graph = `<div class="barres" role="img" aria-label="${echapper(colonnes[iVal])} par ${echapper(colonnes[iLib])}">` +
+        lignes.slice(0, 15).map((l) => `<div class="barre"><span class="lib" title="${echapper(l[iLib])}">${echapper(l[iLib])}</span>
+          <span class="piste"><span class="rempli" style="width:${Math.max(1, 100 * (l[iVal] || 0) / max)}%; display:block"></span></span>
+          <span class="val">${format(l[iVal])}</span></div>`).join("") + "</div>";
+    }
+    $("graphique").innerHTML = graph;
+    if (!lignes.length) { $("tableau").innerHTML = `<p class="note" style="padding:10px">Aucune ligne.</p>`; return; }
+    $("tableau").innerHTML = `<table><thead><tr>${colonnes.map((c, i) => `<th class="${numeriques[i] ? "num" : ""}">${echapper(c)}</th>`).join("")}</tr></thead>
+      <tbody>${lignes.slice(0, 200).map((l) => `<tr>${l.map((v, i) => `<td class="${numeriques[i] ? "num" : ""}">${format(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  }
+
+  // Garde-fous puis exécution (commun aux réponses de Sogolon et au SQL modifié à la main)
+  function executer(sql, sc, manuel) {
+    $("zone-resultat").hidden = true;
+    const res = G.valider(sql);
+    afficherControles(res);
+    if (!res.ok) {
+      etapes(["question", "contexte", "sql"], "garde");
+      etat(`<strong>Sogolon a bloqué la requête</strong> : les garde-fous n'autorisent que la lecture.`);
+      return;
+    }
+    const t0 = performance.now();
+    try {
+      const r = db.exec(res.sql);
+      const duree = Math.round(performance.now() - t0);
+      const colonnes = r.length ? r[0].columns : [], lignes = r.length ? r[0].values : [];
+      etapes(["question", "contexte", "sql", "garde", "exec", "resultat"]);
+      etat(manuel ? `<strong>Exécution manuelle</strong> : ${lignes.length} ligne${lignes.length > 1 ? "s" : ""}, sans appel au modèle.`
+        : `<strong>Sogolon a trouvé ${lignes.length} ligne${lignes.length > 1 ? "s" : ""}.</strong>`);
+      afficherResultat(colonnes, lignes, duree, sc);
+    } catch (e) {
+      etapes(["question", "contexte", "sql", "garde"], "exec");
+      etat(`<strong>Erreur SQL</strong> : ${echapper(e.message)}`);
+    }
+  }
+
+  function repondre(question) {
+    question = question.trim();
+    if (!question) return;
+    $("question").value = question;
+    $("prompt").textContent = promptComplet(question);
+    etapes(["question"]);
+    $("zone-sql").hidden = true; $("zone-resultat").hidden = true;
+    etat("Sogolon réfléchit…");
+    const { s, score } = rapprocher(question);
+    setTimeout(() => {
+      if (!s || score < 0.3) {
+        etapes(["question", "contexte"]);
+        etat(`<strong>Pas de requête enregistrée pour cette question.</strong> La démo en ligne n'appelle pas de modèle :
+          choisissez une question ci-dessus, ou écrivez votre propre SQL dans l'éditeur.`);
+        ouvrirEditeur(null, "-- Écrivez une requête SELECT sur la base fictive\nSELECT * FROM point_vente", "Éditeur libre");
+        return;
+      }
+      ouvrirEditeur(s, s.sql, score === 1 ? "requête validée, réutilisée sans appel au modèle (0 jeton)"
+        : `question proche reconnue : « ${s.question} »`);
+      etapes(["question", "contexte", "sql"]);
+      if (s.impossible) {
+        $("controles").innerHTML = ""; $("message-garde").innerHTML = `<div class="message info">Rien à exécuter : Sogolon préfère dire qu'elle ne sait pas plutôt qu'inventer une colonne.</div>`;
+        etat(`<strong>Sogolon ne peut pas répondre avec ce schéma.</strong>`);
+        return;
+      }
+      executer(s.sql, s, false);
+    }, 450);
+  }
+  function ouvrirEditeur(s, sql, origine) {
+    scenario = s;
+    $("zone-sql").hidden = false;
+    $("sql").value = sql;
+    $("origine-sql").textContent = origine;
+    $("explication").textContent = s ? s.explication : "Testez vos propres requêtes : les garde-fous refusent toute écriture.";
+    $("revenir").hidden = !s;
+    $("controles").innerHTML = ""; $("message-garde").innerHTML = "";
+  }
+
+  // ---------- Démarrage ----------
+  $("suggestions").innerHTML = S.map((s) =>
+    `<button type="button" class="${s.id === "garde_fou_ecriture" || s.id === "hors_schema" ? "demo" : ""}" data-id="${s.id}">${echapper(s.question)}</button>`).join("");
+  $("suggestions").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-id]");
+    if (b && db) repondre(S.find((s) => s.id === b.dataset.id).question);
+  });
+  $("formulaire").addEventListener("submit", (e) => { e.preventDefault(); if (db) repondre($("question").value); });
+  $("executer").addEventListener("click", () => executer($("sql").value, scenario, true));
+  $("revenir").addEventListener("click", () => { if (scenario) { $("sql").value = scenario.sql; executer(scenario.sql, scenario, false); } });
+  $("date-jour").textContent = new Date(D.DATE_DU_JOUR).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+  initSqlJs({ locateFile: (f) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` }).then((SQL) => {
+    const base = new SQL.Database();
+    D.remplir(base);
+    db = base;
+    $("prompt").textContent = promptComplet("");
+    const tables = db.exec("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name")[0].values.map((v) => v[0]);
+    $("tables").innerHTML = tables.map((t) => {
+      const n = db.exec(`SELECT COUNT(*) FROM ${t}`)[0].values[0][0];
+      return `<div><b>${t}</b> · ${nf.format(n)} lignes<br><span class="note">${echapper((D.COMMENTAIRES[t] || {})[""] || "")}</span></div>`;
+    }).join("");
+    $("demander").disabled = false; $("demander").textContent = "Demander à Sogolon";
+    etat("Base fictive prête. Choisissez une question ou écrivez la vôtre.");
+  }).catch((e) => etat(`<strong>Impossible de charger SQLite</strong> : ${echapper(e.message)}`));
+})();
+</script>
+</body>
+</html>

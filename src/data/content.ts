@@ -123,6 +123,13 @@ export const ui = {
     en: 'A replay of typical runs, with fictional documents, accounts and tools. Nothing here touches real data.',
     fr: 'La rediffusion d’exécutions types, avec des documents, comptes et outils fictifs. Rien ici ne touche à des données réelles.',
   },
+  pocTitle: { en: 'Try the demo', fr: 'Essayer la démo' },
+  pocLead: {
+    en: 'A reduced, self-contained version running in your browser: a fictional SQLite database, the guardrails replayed live, and the exact prompt the model would receive. Queries are pre-written and replayed; no AI model is called. The demo is in French.',
+    fr: 'Une version réduite et autonome qui tourne dans votre navigateur : une base SQLite fictive, les garde-fous rejoués en direct et le prompt exact que recevrait le modèle. Les requêtes sont pré-écrites et rejouées ; aucun modèle d’IA n’est appelé.',
+  },
+  pocOpen: { en: 'Open the demo full screen', fr: 'Ouvrir la démo en plein écran' },
+  resultsTitle: { en: 'Results', fr: 'Résultats' },
   howItWorks: { en: 'See how it works', fr: 'Voir le fonctionnement' },
   backHome: { en: 'Back to the portfolio', fr: 'Retour au portfolio' },
   stepsTitle: { en: 'How it works', fr: 'Fonctionnement' },
@@ -134,6 +141,7 @@ export const ui = {
     pilot: { en: 'Pilot in progress', fr: 'Pilote en cours' },
     paused: { en: 'Prototype on hold', fr: 'Prototype en pause' },
     personal: { en: 'Personal project', fr: 'Projet personnel' },
+    delivery: { en: 'Near delivery', fr: 'Proche de la livraison' },
   },
 };
 
@@ -160,7 +168,7 @@ export const services: { title: L; text: L; proof: L }[] = [
       en: 'When a task needs several steps or a lot of documents, build an agent that uses tools, or a search engine that cites its sources.',
       fr: 'Quand une tâche demande plusieurs étapes ou beaucoup de documents, construire un agent qui utilise des outils, ou un moteur de recherche qui cite ses sources.',
     },
-    proof: { en: 'ReAct agent over MCP tools; Migroo and PrivaSearch for retrieval.', fr: 'Agent ReAct sur des outils MCP ; Migroo et PrivaSearch pour la recherche.' },
+    proof: { en: 'ReAct agent over MCP tools; Sogolon for questions on databases; Migroo and PrivaSearch for documents.', fr: 'Agent ReAct sur des outils MCP ; Sogolon pour interroger les bases de données ; Migroo et PrivaSearch pour les documents.' },
   },
 ];
 
@@ -326,6 +334,41 @@ export const projects: Item[] = [
           fr: 'Indexation et retrieval tournent en local ; la génération appelle par défaut un LLM hébergé. Code prêt pour la production, pilote en cours à Sonatel.',
         },
         keywords: 'production deployment local',
+      },
+    ],
+  },
+  {
+    id: 'sogolon',
+    page: 'sogolon',
+    title: { en: 'Sogolon', fr: 'Sogolon' },
+    summary: {
+      en: 'NL-to-SQL assistant for sales and collections reporting.',
+      fr: 'Assistante NL-to-SQL pour le pilotage commercial et le recouvrement.',
+    },
+    status: 'delivery',
+    tags: ['Python', 'FastAPI', 'MySQL', 'LLM', 'NL-to-SQL'],
+    links: [{ label: { en: 'Try the demo', fr: 'Essayer la démo' }, url: '/demos/sogolon/' }],
+    bullets: [
+      {
+        text: {
+          en: 'Ask a sales or collections question in French and get the SQL query, the result and a chart, while the language model never sees a single row of data: it only receives the question and the schema.',
+          fr: 'Une question de pilotage posée en français donne la requête SQL, le résultat et un graphique, sans que le modèle de langage ne voie jamais une ligne de données : il ne reçoit que la question et le schéma.',
+        },
+        keywords: 'nl2sql text-to-sql sql database question natural language mysql agent',
+      },
+      {
+        text: {
+          en: 'Read-only guardrails before execution: a single SELECT or WITH statement, write keywords refused, LIMIT added, time limit, and a read-only database session on top.',
+          fr: 'Garde-fous en lecture seule avant exécution : une seule instruction SELECT ou WITH, mots-clés d’écriture refusés, LIMIT ajouté, délai maximal, et une session base de données en lecture seule en plus.',
+        },
+        keywords: 'guardrails security read-only safety injection',
+      },
+      {
+        text: {
+          en: 'A short business knowledge base and column comments document the schema’s traps; validated queries are replayed at zero token cost, and recurring reports use fixed queries so they stay reproducible.',
+          fr: 'Une base de connaissance métier courte et des commentaires de colonnes documentent les pièges du schéma ; les requêtes validées sont rejouées sans aucun jeton, et les rapports récurrents utilisent des requêtes fixes pour rester reproductibles.',
+        },
+        keywords: 'knowledge base few-shot reporting evaluation cost tokens',
       },
     ],
   },

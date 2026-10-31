@@ -12,6 +12,7 @@ export type Detail = {
   steps: { title: L; text: L }[];
   example?: { caption: L; code: string };
   notes?: L[];
+  results?: L[];
 };
 
 const W = 140, H = 64;
@@ -106,7 +107,75 @@ const agentSvg = diagram({
   ],
 });
 
+
+// ---------- Sogolon ----------
+const sogolonSvg = diagram({
+  w: 992, h: 470,
+  title: { en: 'Sogolon architecture', fr: 'Architecture Sogolon' },
+  groups: [
+    { x: 196, y: 14, w: 300, h: 196, label: { en: 'AI service · no database access', fr: 'Service IA · sans accès à la base' } },
+    { x: 196, y: 248, w: 616, h: 208, kind: 'boundary', labelEnd: true, label: { en: 'Data service', fr: 'Service données' } },
+  ],
+  nodes: [
+    { x: 24, y: 178, w: 140, h: 64, kind: 'io', label: { en: 'Question', fr: 'Question' }, sub: { en: 'in French', fr: 'en français' } },
+    { x: 226, y: 62, w: 240, h: 64, label: { en: 'Prompt', fr: 'Prompt' }, sub: { en: 'rules + knowledge + schema', fr: 'consignes + savoir + schéma' } },
+    { x: 226, y: 140, w: 240, h: 56, kind: 'accent', label: { en: 'LLM', fr: 'LLM' }, sub: { en: 'writes one SQL query', fr: 'écrit une requête SQL' } },
+    { x: 545, y: 62, w: 220, h: 64, label: { en: 'Metadata', fr: 'Métadonnées' }, sub: { en: 'columns + comments', fr: 'colonnes + commentaires' } },
+    { x: 226, y: 300, w: 200, h: 64, label: { en: 'Guardrails', fr: 'Garde-fous' }, sub: { en: 'SELECT only · LIMIT', fr: 'SELECT seul · LIMIT' } },
+    { x: 226, y: 386, w: 200, h: 52, kind: 'io', label: { en: 'Refusal explained', fr: 'Refus expliqué' } },
+    { x: 500, y: 296, w: 200, h: 72, kind: 'store', label: { en: 'Test database', fr: 'Base de test' }, sub: { en: 'read-only session', fr: 'session lecture seule' } },
+    { x: 836, y: 178, w: 140, h: 64, kind: 'io', label: { en: 'SQL + table', fr: 'SQL + tableau' }, sub: { en: '+ chart', fr: '+ graphique' } },
+  ],
+  edges: [
+    { points: [[164, 210], [196, 210], [196, 94], [224, 94]] },
+    { points: [[346, 126], [346, 138]] },
+    { points: [[655, 296], [655, 128]], label: { en: 'schema as text', fr: 'schéma en texte' }, at: [655, 220] },
+    { points: [[543, 94], [468, 94]] },
+    { points: [[346, 196], [346, 236], [326, 236], [326, 298]], label: { en: 'SQL', fr: 'SQL' }, at: [362, 232] },
+    { points: [[426, 332], [498, 332]], label: { en: 'allowed', fr: 'autorisé' }, at: [462, 324] },
+    { points: [[326, 364], [326, 384]], dashed: true },
+    { points: [[700, 332], [906, 332], [906, 244]], label: { en: 'rows stay here', fr: 'les lignes restent ici' }, at: [800, 324] },
+  ],
+});
+
 export const details: Detail[] = [
+  {
+    slug: 'sogolon',
+    projectId: 'sogolon',
+    lead: {
+      en: 'Sogolon is an assistant that turns a sales or collections question asked in French into a SQL query, runs it read-only and shows the query, the result and a chart. Built for a West African telecom operator after several commercial systems were merged into one.',
+      fr: 'Sogolon est une assistante qui traduit une question de pilotage commercial ou de recouvrement posée en français en requête SQL, l’exécute en lecture seule et affiche la requête, le résultat et un graphique. Réalisée pour un opérateur télécom d’Afrique de l’Ouest, après la fusion de plusieurs systèmes commerciaux en un seul.',
+    },
+    diagramTitle: { en: 'The model sees the schema, never the data', fr: 'Le modèle voit le schéma, jamais les données' },
+    svg: sogolonSvg,
+    steps: [
+      { title: { en: 'The problem', fr: 'Le problème' }, text: { en: 'Every reporting question, such as “collections this month by shop” or “accounts with more than 3 unpaid invoices”, went through the data team and a hand-written query. The database is large and many column names, inherited from the old systems, are misleading.', fr: 'Chaque question de pilotage, comme « encaissements du mois par boutique » ou « comptes avec plus de 3 factures impayées », passait par l’équipe données et une requête écrite à la main. La base est vaste et beaucoup de noms de colonnes, hérités des anciens systèmes, sont trompeurs.' } },
+      { title: { en: 'Build the prompt from the schema', fr: 'Construire le prompt à partir du schéma' }, text: { en: 'The data service reads the metadata (tables, columns, types, comments). The AI service sends the model the rules, a short business knowledge base and this schema as text, with the question.', fr: 'Le service données lit les métadonnées (tables, colonnes, types, commentaires). Le service IA envoie au modèle les consignes, une base de connaissance métier courte et ce schéma en texte, avec la question.' } },
+      { title: { en: 'Check before running', fr: 'Vérifier avant d’exécuter' }, text: { en: 'The returned SQL goes through guardrails: a single SELECT or WITH, no write keywords outside strings and comments, no variables, LIMIT 1000 added, a time limit. The session itself is read-only as a second barrier.', fr: 'Le SQL renvoyé passe les garde-fous : une seule instruction SELECT ou WITH, aucun mot-clé d’écriture hors chaînes et commentaires, pas de variables, LIMIT 1000 ajouté, délai maximal. La session elle-même est en lecture seule, comme seconde barrière.' } },
+      { title: { en: 'Show the work', fr: 'Montrer le travail' }, text: { en: 'The user sees the SQL, a sortable and filterable table and a chart, with PNG, SVG and CSV export. If the answer is wrong, a feedback loop corrects the query and proposes a rule that an administrator can add to the knowledge base.', fr: 'L’utilisateur voit le SQL, un tableau triable et filtrable et un graphique, avec export PNG, SVG et CSV. Si la réponse ne convient pas, une boucle de retour corrige la requête et propose une règle qu’un administrateur peut ajouter à la base de connaissance.' } },
+      { title: { en: 'Reuse what is validated', fr: 'Réutiliser ce qui est validé' }, text: { en: 'A question already validated is replayed as is, with no model call. A close question gets the validated query as an example. Recurring collection reports use fixed aggregated queries, without the model, so they are reproducible to the cent.', fr: 'Une question déjà validée est rejouée telle quelle, sans appel au modèle. Une question proche reçoit la requête validée comme exemple. Les rapports de recouvrement récurrents utilisent des requêtes fixes agrégées, sans modèle, pour être reproductibles au centime près.' } },
+    ],
+    notes: [
+      { en: 'Documenting the schema’s traps worked better than changing models: misleading columns and implicit conventions caused most errors, and column comments plus a short knowledge base fixed most of them.', fr: 'Documenter les pièges du schéma a mieux marché que changer de modèle : les colonnes trompeuses et les conventions implicites causaient l’essentiel des erreurs, et des commentaires de colonnes plus une base de connaissance courte en ont corrigé la plupart.' },
+      { en: 'Evaluation compares results, not query text: the generated SQL and the reference SQL are both executed on 30 business questions, because two different queries can both be right.', fr: 'L’évaluation compare les résultats, pas le texte des requêtes : le SQL généré et le SQL de référence sont tous deux exécutés sur 30 questions métier, car deux requêtes différentes peuvent être justes.' },
+      { en: 'A transparency page shows exactly what was sent to the model provider (key masked) and automatic checks prove the AI service never received data rows.', fr: 'Une page Transparence montre exactement ce qui est parti vers le fournisseur du modèle (clé masquée), et des contrôles automatiques prouvent que le service IA n’a jamais reçu de lignes de données.' },
+      { en: 'Stack: Python, FastAPI, MySQL, SQLite, OpenAI (GPT) or Anthropic API with an interchangeable provider, plain HTML and JavaScript front end, deployed on Windows Server.', fr: 'Stack : Python, FastAPI, MySQL, SQLite, API OpenAI (GPT) ou Anthropic avec fournisseur interchangeable, interface HTML et JavaScript natif, déploiement sur Windows Server.' },
+    ],
+    results: [
+      { en: 'Target: at least 70% correct answers on the 30 reference questions (identical execution result).', fr: 'Objectif : au moins 70 % de réponses correctes sur les 30 questions de référence (résultat d’exécution identique).' },
+      { en: 'About 14,500 lines of Python, HTML and JavaScript, 5 collection reports and 14 documented iterations.', fr: 'Environ 14 500 lignes de Python, HTML et JavaScript, 5 rapports de recouvrement et 14 évolutions documentées.' },
+    ],
+    example: {
+      caption: { en: 'Excerpt of what the model receives: rules and schema, no data', fr: 'Extrait de ce que reçoit le modèle : consignes et schéma, aucune donnée' },
+      code: `TABLE facture -- Factures mensuelles des comptes postpayés
+  - periode TEXT -- Mois facturé au format 'AAAA-MM'
+  - solde INTEGER -- Reste à payer en FCFA (0 = soldée)
+  - statut TEXT -- 'VALIDE' ou 'ANNULEE'.
+    Facture impayée = statut 'VALIDE' ET solde > 0
+
+Question : Comptes avec plus de 3 factures impayées`,
+    },
+  },
   {
     slug: 'migroo',
     projectId: 'migroo',

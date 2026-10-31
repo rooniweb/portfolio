@@ -34,6 +34,24 @@ const title = `${p.title.en} · ${person.name}`;
       <p class="dg-hint" set:html={t(ui.diagramNote)} />
     </figure>
 
+    {slug === 'sogolon' && (
+      <section class="d-demo">
+        <h2 set:html={t(ui.pocTitle)} />
+        <p set:html={t(ui.pocLead)} />
+        <p class="plinks"><a href="/demos/sogolon/" target="_blank" rel="noopener" set:html={t(ui.pocOpen)} /></p>
+        <div class="poc-frame">
+          <iframe src="/demos/sogolon/" title="Sogolon demo" loading="lazy"></iframe>
+        </div>
+      </section>
+    )}
+
+    {d.results && (
+      <section class="d-results">
+        <h2 set:html={t(ui.resultsTitle)} />
+        <ul class="paras">{d.results.map((r) => <li><span set:html={t(r)} /></li>)}</ul>
+      </section>
+    )}
+
     {demoKey[slug] && (
       <section class="d-demo">
         <h2 set:html={t(ui.demoSectionTitle)} />
