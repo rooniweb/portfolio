@@ -108,6 +108,13 @@ export const ui = {
     en: 'Retrieval is one tool among others. Most of the value comes from finding where a team loses time, then choosing the lightest thing that fixes it: an automation, a search engine or an agent.',
     fr: 'Le RAG est un outil parmi d’autres. L’essentiel de la valeur vient de repérer où une équipe perd du temps, puis de choisir la solution la plus légère qui règle le problème : une automatisation, un moteur de recherche ou un agent.',
   },
+  articleLabel: { en: 'Article', fr: 'Article' },
+  readArticle: { en: 'Read the article', fr: 'Lire l’article' },
+  kmTitle: { en: 'Knowledge management with AI', fr: 'Knowledge management avec l’IA' },
+  kmText: {
+    en: 'My approach to an enterprise knowledge assistant: break the document silos, ground every answer in the sources, enforce permissions, and measure before scaling. Migroo handles ingestion and indexing; PrivaSearch keeps everything on premise when documents cannot leave.',
+    fr: 'Ma démarche pour un assistant de connaissances en entreprise : casser les silos documentaires, ancrer chaque réponse dans les sources, appliquer les droits d’accès et mesurer avant d’étendre. Migroo gère l’ingestion et l’indexation ; PrivaSearch garde tout on-premise quand les documents ne peuvent pas sortir.',
+  },
   demoBadge: { en: 'Demo · fictional data', fr: 'Démo · données fictives' },
   demoRun: { en: 'Run', fr: 'Lancer' },
   demoReplay: { en: 'Run again', fr: 'Relancer' },

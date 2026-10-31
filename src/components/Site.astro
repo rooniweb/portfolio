@@ -75,6 +75,25 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
           </li>
         ))}
       </ol>
+      <article class="km-card">
+        <div>
+          <p class="a-meta"><span set:html={t(ui.articleLabel)} /></p>
+          <h3 set:html={t(ui.kmTitle)} />
+          <p set:html={t(ui.kmText)} />
+          <p class="plinks">
+            <a href={href(lang, '/articles/knowledge-management-ai/')} data-path="/articles/knowledge-management-ai/" set:html={t(ui.readArticle)} />
+            <a href={href(lang, '/projects/migroo/')} data-path="/projects/migroo/">Migroo</a>
+            <a href={href(lang, '/projects/privasearch/')} data-path="/projects/privasearch/">PrivaSearch</a>
+          </p>
+        </div>
+        <ol class="km-flow" aria-hidden="true">
+          <li><span set:html={t({ en: 'Scattered documents', fr: 'Documents dispersés' })} /></li>
+          <li class="p"><strong>Migroo</strong><span set:html={t({ en: 'ingest · chunk · index', fr: 'ingérer · découper · indexer' })} /></li>
+          <li class="p"><strong>PrivaSearch</strong><span set:html={t({ en: 'search · on premise', fr: 'rechercher · on-premise' })} /></li>
+          <li class="end"><span set:html={t({ en: 'Sourced answers', fr: 'Réponses sourcées' })} /></li>
+        </ol>
+      </article>
+
       <div class="services-demo">
         <h3 set:html={t({ en: 'Email triage with n8n and an LLM', fr: 'Tri d’e-mails avec n8n et un LLM' })} />
         <Replay demo="email" />

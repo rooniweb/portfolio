@@ -1,0 +1,52 @@
+---
+import Layout from './Layout.astro';
+import { person, ui, projects } from '../data/content';
+import { article } from '../data/article';
+import { t, href } from '../lib/i18n';
+
+interface Props { lang: 'en' | 'fr' }
+const { lang } = Astro.props;
+const pageOf: Record<string, string> = { migroo: 'migroo', privasearch: 'privasearch' };
+---
+<Layout lang={lang} title={`${article.title[lang]} · ${person.name}`} description={article.dek[lang]}>
+  <main id="top" class="wrap article">
+    <a class="back" href={href(lang, '/#services')} data-path="/#services" set:html={t(ui.backHome)} />
+    <header class="a-head">
+      <p class="a-meta"><span set:html={t(ui.articleLabel)} /><span aria-hidden="true">/</span><span set:html={t(article.date)} /></p>
+      <h1 set:html={t(article.title)} />
+      <p class="a-dek" set:html={t(article.dek)} />
+      <p class="a-origin" set:html={t(article.origin)} />
+    </header>
+
+    <div class="a-body">
+      {article.sections.map((s) => (
+        <section>
+          <h2 set:html={t(s.title)} />
+          {s.blocks.map((b) => {
+            if (b.type === 'p') return <p set:html={t(b.text)} />;
+            if (b.type === 'list') return <ul class="paras">{b.items.map((i) => <li><span set:html={t(i)} /></li>)}</ul>;
+            if (b.type === 'compare') return (
+              <div class="a-compare">
+                <div class="bad"><h3 set:html={t(b.left.title)} /><p set:html={t(b.left.text)} /></div>
+                <div class="good"><h3 set:html={t(b.right.title)} /><p set:html={t(b.right.text)} /></div>
+              </div>
+            );
+            if (b.type === 'grid') return (
+              <div class="a-grid">{b.items.map((i) => <div><h3 set:html={t(i.title)} /><p set:html={t(i.text)} /></div>)}</div>
+            );
+            if (b.type === 'project') {
+              const p = projects.find((x) => x.id === b.id)!;
+              return (
+                <aside class="a-project">
+                  <p class="a-project-name">{p.title.en}</p>
+                  <p set:html={t(b.text)} />
+                  <a href={href(lang, `/projects/${pageOf[b.id]}/`)} data-path={`/projects/${pageOf[b.id]}/`} set:html={t(ui.howItWorks)} />
+                </aside>
+              );
+            }
+          })}
+        </section>
+      ))}
+    </div>
+  </main>
+</Layout>
