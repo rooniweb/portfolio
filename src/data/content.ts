@@ -69,7 +69,7 @@ export const ui = {
     en: 'The answer service did not respond. The retrieved passages below are still accurate.',
     fr: 'Le service de réponse n’a pas répondu. Les passages retrouvés ci-dessous restent exacts.',
   },
-  demoPipeline: ['tokenize', 'BM25', 'trigram TF-IDF', 'RRF', 'cite'],
+  demoPipeline: [{ en: 'tokenize', fr: 'tokeniser' }, { en: 'BM25', fr: 'BM25' }, { en: 'trigram TF-IDF', fr: 'TF-IDF trigrammes' }, { en: 'RRF', fr: 'RRF' }, { en: 'cite', fr: 'citer' }],
 
   pathTitle: { en: 'From statistics to retrieval', fr: 'De la statistique au RAG' },
   pathLead: {
@@ -179,10 +179,10 @@ export const dataFacets: { title: L; text: L; tags: string[]; page?: string }[] 
   {
     title: { en: 'Automated reporting', fr: 'Reporting automatisé' },
     text: {
-      en: 'Generate recurring reports automatically: Claude skills turn the data into a formatted, commented report, and fixed queries keep the figures reproducible.',
-      fr: 'Générer automatiquement les rapports récurrents : des skills Claude transforment les données en rapport mis en forme et commenté, et des requêtes fixes gardent des chiffres reproductibles.',
+      en: 'Generate recurring reports automatically: an LLM turns the data into a formatted, commented report, and fixed queries keep the figures reproducible.',
+      fr: 'Générer automatiquement les rapports récurrents : un LLM transforme les données en rapport mis en forme et commenté, et des requêtes fixes gardent des chiffres reproductibles.',
     },
-    tags: ['Claude skills', 'SQL', 'Sogolon'],
+    tags: ['LLM', 'SQL', 'Sogolon'],
   },
 ];
 
@@ -515,15 +515,7 @@ export const projects: Item[] = [
     links: [{ label: { en: 'Open the app', fr: 'Ouvrir l’application' }, url: 'https://revizia-africas-future-learn.lovable.app/' }],
     title: { en: 'RéviZIA', fr: 'RéviZIA' },
     summary: { en: 'Generative-AI learning platform.', fr: 'Plateforme d’apprentissage par l’IA générative.' },
-    bullets: [
-      {
-        text: {
-          en: 'A learning platform built on generative AI.',
-          fr: 'Une plateforme d’apprentissage reposant sur l’IA générative.',
-        },
-        keywords: 'education learning generative',
-      },
-    ],
+    bullets: [],
   },
   {
     id: 'xamloo',
@@ -543,14 +535,16 @@ export const projects: Item[] = [
   },
 ];
 
-export const stack: { group: L; items: string[]; note?: L }[] = [
+export type Item2 = string | L;
+export const itemText = (i: Item2, lang: 'en' | 'fr') => (typeof i === 'string' ? i : i[lang]);
+export const stack: { group: L; items: Item2[]; note?: L }[] = [
   {
     group: { en: 'Retrieval & RAG', fr: 'Retrieval & RAG' },
-    items: ['Qdrant', 'ChromaDB', 'nomic-embed-text', 'Hybrid search (dense + BM25, RRF)', 'Chunking & metadata', 'Grounding prompts'],
+    items: ['Qdrant', 'ChromaDB', 'nomic-embed-text', { en: 'Hybrid search (dense + BM25, RRF)', fr: 'Recherche hybride (dense + BM25, RRF)' }, { en: 'Chunking & metadata', fr: 'Chunking et métadonnées' }, { en: 'Grounding prompts', fr: 'Prompts de grounding' }],
   },
   {
     group: { en: 'LLMs & agents', fr: 'LLM & agents' },
-    items: ['OpenAI (GPT)', 'Ollama', 'TypeSafe Jev', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', 'Structured outputs', 'Evals'],
+    items: ['OpenAI (GPT)', 'Ollama', 'TypeSafe Jev', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', { en: 'Structured outputs', fr: 'Sorties structurées' }, { en: 'Evals', fr: 'Évaluations (evals)' }],
   },
   {
     group: { en: 'Engineering', fr: 'Développement' },
@@ -558,7 +552,7 @@ export const stack: { group: L; items: string[]; note?: L }[] = [
   },
   {
     group: { en: 'Analysis & BI', fr: 'Analyse & BI' },
-    items: ['Power BI', 'Tableau', 'Excel', 'KPI design', 'SQL reporting', 'Statistics', 'Time-series forecasting', 'LightGBM', 'Automated reporting with Claude skills'],
+    items: ['Power BI', 'Tableau', 'Excel', { en: 'KPI design', fr: 'Définition de KPI' }, { en: 'SQL reporting', fr: 'Reporting SQL' }, { en: 'Statistics', fr: 'Statistique' }, { en: 'Time-series forecasting', fr: 'Prévision de séries temporelles' }, 'LightGBM', { en: 'LLM-automated reporting', fr: 'Reporting automatisé par LLM' }],
   },
   {
     group: { en: 'Data engineering', fr: 'Data engineering' },
@@ -623,14 +617,14 @@ export function buildCorpus(): Chunk[] {
   experience.forEach((it) => add({ en: 'Experience', fr: 'Expérience' }, 'work', it));
   projects.forEach((it) => add({ en: 'Projects', fr: 'Projets' }, 'projects', it));
   stack.forEach((s, i) => {
-    const text = { en: `${s.group.en}: ${s.items.join(', ')}.` + (s.note ? ' ' + s.note.en : ''), fr: `${s.group.fr} : ${s.items.join(', ')}.` + (s.note ? ' ' + s.note.fr : '') };
+    const text = { en: `${s.group.en}: ${s.items.map((i) => itemText(i, 'en')).join(', ')}.` + (s.note ? ' ' + s.note.en : ''), fr: `${s.group.fr} : ${s.items.map((i) => itemText(i, 'fr')).join(', ')}.` + (s.note ? ' ' + s.note.fr : '') };
     out.push({
       id: `stack#${i + 1}`,
       path: { en: `Stack › ${s.group.en}`, fr: `Stack › ${s.group.fr}` },
       anchor: 'stack',
       text,
       parent: text,
-      keywords: s.items.join(' '),
+      keywords: s.items.map((i) => itemText(i, 'en')).join(' '),
     });
   });
   education.forEach((e, i) => {

@@ -32,8 +32,7 @@ const navPath = (id: string) => (home ? undefined : `/#${id}`);
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script is:inline set:html={`(function(){var r=document.documentElement,l='${lang}';
-    if(l==='en'){try{if(localStorage.getItem('lang')==='fr')l='fr';}catch(e){}}
-    r.setAttribute('data-lang',l);r.setAttribute('lang',l);
+    if(l==='en'){try{if(localStorage.getItem('lang')==='fr'){location.replace('/fr'+location.pathname+location.hash);return;}}catch(e){}}
     try{var th=localStorage.getItem('theme');if(th==='dark'||th==='light')r.setAttribute('data-theme',th);}catch(e){}})();`}></script>
 </head>
 <body>
@@ -68,26 +67,12 @@ const navPath = (id: string) => (home ? undefined : `/#${id}`);
   <script is:inline>
     (function () {
       var root = document.documentElement;
-      // Internal links follow the language on screen (/fr prefix or not).
-      function syncLinks() {
-        var fr = root.getAttribute('data-lang') === 'fr';
-        document.querySelectorAll('a[data-path]').forEach(function (a) {
-          a.setAttribute('href', (fr ? '/fr' : '') + a.getAttribute('data-path'));
-        });
-      }
-      syncLinks();
+      // Each page holds a single language; the toggle opens the same page in the other one.
       document.getElementById('lang-toggle').addEventListener('click', function () {
         var next = root.getAttribute('data-lang') === 'en' ? 'fr' : 'en';
-        root.setAttribute('data-lang', next);
-        root.setAttribute('lang', next);
         try { localStorage.setItem('lang', next); } catch (e) {}
-        // Keep the address in sync so a copied link opens in the language on screen.
-        try {
-          var base = location.pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
-          history.replaceState(null, '', (next === 'fr' ? '/fr' + base : base) + location.hash);
-        } catch (e) {}
-        syncLinks();
-        document.dispatchEvent(new Event('langchange'));
+        var base = location.pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
+        location.href = (next === 'fr' ? '/fr' + base : base) + location.hash;
       });
       document.getElementById('theme-toggle').addEventListener('click', function () {
         var cur = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
