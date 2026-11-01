@@ -434,3 +434,5 @@ html { scrollbar-color: color-mix(in srgb, var(--indigo) 55%, transparent) var(-
 .r-table tr.hi td { font-weight: 700; color: var(--indigo-ink); background: var(--indigo-wash); }
 .r-table tr.mu td { color: var(--muted); font-style: italic; }
 .facets .plinks { margin-top: 10px; }
+
+.status.delivered { background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal); }

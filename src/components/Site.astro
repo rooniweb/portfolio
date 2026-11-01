@@ -190,6 +190,7 @@ const migrooChain = [{ en: 'Sources', fr: 'Sources' }, { en: 'Parsing', fr: 'Par
             <h3 set:html={t(it.title)} />
             <p class="sum" set:html={t(it.summary!)} />
             <p class="chips">
+              {it.delivered && <span class="status delivered" set:html={t(ui.status.delivered)} />}
               {it.status && <span class={`status ${it.status}`} set:html={t(ui.status[it.status])} />}
               {(it.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
             </p>

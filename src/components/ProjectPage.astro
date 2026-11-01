@@ -22,6 +22,7 @@ const title = `${p.title.en} · ${person.name}`;
       <h1 set:html={t(p.title)} />
       <p class="d-sum" set:html={t(p.summary!)} />
       <p class="chips">
+        {p.delivered && <span class="status delivered" set:html={t(ui.status.delivered)} />}
         {p.status && <span class={`status ${p.status}`} set:html={t(ui.status[p.status])} />}
         {(p.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
       </p>

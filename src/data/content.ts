@@ -153,7 +153,7 @@ export const ui = {
     pilot: { en: 'Pilot in progress', fr: 'Pilote en cours' },
     paused: { en: 'Prototype on hold', fr: 'Prototype en pause' },
     personal: { en: 'Personal project', fr: 'Projet personnel' },
-    delivery: { en: 'Near delivery', fr: 'Proche de la livraison' },
+    delivered: { en: 'Delivered', fr: 'Livré' },
     study: { en: 'Study on fictional data', fr: 'Étude sur données fictives' },
   },
 };
@@ -216,7 +216,7 @@ export const services: { title: L; text: L; proof: L }[] = [
 export const path = [
   {
     title: { en: 'Statistics & data science', fr: 'Statistique & data science' },
-    when: { en: 'Master’s', fr: 'Master 2' },
+    when: '2023',
     text: {
       en: 'Statistics and decision computing; thesis on time-series forecasting, classical models versus deep learning.',
       fr: 'Statistique et informatique décisionnelle ; mémoire sur la prévision de séries temporelles, modèles classiques contre deep learning.',
@@ -266,6 +266,7 @@ export type Item = {
   summary?: L;
   bullets: { text: L; keywords?: string }[];
   links?: { label: L; url: string }[];
+  delivered?: boolean;
   page?: string; // slug of the dedicated "how it works" page
 };
 
@@ -354,6 +355,7 @@ export const experience: Item[] = [
 export const projects: Item[] = [
   {
     id: 'migroo',
+    delivered: true,
     page: 'migroo',
     title: { en: 'Migroo', fr: 'Migroo' },
     summary: {
@@ -408,7 +410,7 @@ export const projects: Item[] = [
       en: 'NL-to-SQL assistant for sales and collections reporting.',
       fr: 'Assistante NL-to-SQL pour le pilotage commercial et le recouvrement.',
     },
-    status: 'delivery',
+    status: 'delivered',
     tags: ['Python', 'FastAPI', 'MySQL', 'LLM', 'NL-to-SQL'],
     links: [{ label: { en: 'Try the demo', fr: 'Essayer la démo' }, url: '/demos/sogolon/' }],
     bullets: [
@@ -437,6 +439,7 @@ export const projects: Item[] = [
   },
   {
     id: 'risk',
+    delivered: true,
     page: 'payment-risk',
     title: { en: 'Payment default risk', fr: 'Risque d’impayés' },
     summary: {
@@ -476,6 +479,7 @@ export const projects: Item[] = [
   },
   {
     id: 'privasearch',
+    delivered: true,
     page: 'privasearch',
     title: { en: 'PrivaSearch', fr: 'PrivaSearch' },
     summary: {
@@ -495,6 +499,7 @@ export const projects: Item[] = [
   },
   {
     id: 'agent',
+    delivered: true,
     page: 'orange-money-agent',
     title: { en: 'Orange Money AI Agent', fr: 'Orange Money AI Agent' },
     summary: { en: 'ReAct agent over a sandboxed API.', fr: 'Agent ReAct sur une API sandbox.' },
@@ -512,6 +517,7 @@ export const projects: Item[] = [
   },
   {
     id: 'revizia',
+    delivered: true,
     links: [{ label: { en: 'Open the app', fr: 'Ouvrir l’application' }, url: 'https://revizia-africas-future-learn.lovable.app/' }],
     title: { en: 'RéviZIA', fr: 'RéviZIA' },
     summary: { en: 'Generative-AI learning platform.', fr: 'Plateforme d’apprentissage par l’IA générative.' },
@@ -570,7 +576,7 @@ export const stack: { group: L; items: Item2[]; note?: L }[] = [
 
 export const education = [
   {
-    title: { en: 'Master’s in Statistics and Decision Computing (SID)', fr: 'Master 2 Statistique et Informatique Décisionnelle (SID)' },
+    title: { en: 'Master’s in Statistics and Decision Computing (SID), 2023', fr: 'Master 2 Statistique et Informatique Décisionnelle (SID), 2023' },
     org: { en: 'Université Alioune Diop de Bambey, Senegal', fr: 'Université Alioune Diop de Bambey, Sénégal' },
     note: { en: 'Thesis: classical and deep learning models compared for time-series forecasting.', fr: 'Mémoire : comparaison de modèles classiques et de deep learning pour la prévision de séries temporelles.' },
   },
