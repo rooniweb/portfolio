@@ -2,7 +2,7 @@
 // fictional and labelled as such on the page.
 import type { L } from './content';
 
-export type StepKind = 'input' | 'trigger' | 'think' | 'decide' | 'extract' | 'tool' | 'obs' | 'retrieved' | 'llm' | 'route' | 'answer' | 'refuse';
+export type StepKind = 'fields' | 'parse' | 'classify' | 'verify' | 'verdict' | 'report' | 'input' | 'trigger' | 'think' | 'decide' | 'extract' | 'tool' | 'obs' | 'retrieved' | 'llm' | 'route' | 'answer' | 'refuse';
 export type Step = { kind: StepKind; meta?: L | string; body: L | string; code?: boolean };
 export type Scenario = { label: L; steps: Step[] };
 
@@ -10,6 +10,12 @@ export const kindLabel: Record<StepKind, L> = {
   input: { en: 'Input', fr: 'Entrée' },
   trigger: { en: 'Trigger', fr: 'Déclencheur' },
   think: { en: 'Reasoning', fr: 'Raisonnement' },
+  parse: { en: 'Reading · native text or OCR', fr: 'Lecture · texte natif ou OCR' },
+  classify: { en: 'Classification', fr: 'Classification' },
+  verify: { en: 'Verification · rules', fr: 'Vérification · règles' },
+  report: { en: 'Report · metrics', fr: 'Rapport · métriques' },
+  verdict: { en: 'Decision · rules', fr: 'Décision · règles' },
+  fields: { en: 'Extraction · rules', fr: 'Extraction · règles' },
   decide: { en: 'Decision · TypeSafe Jev', fr: 'Décision · TypeSafe Jev' },
   extract: { en: 'Extraction · LLM', fr: 'Extraction · LLM' },
   tool: { en: 'Tool call', fr: 'Appel d’outil' },
@@ -131,3 +137,59 @@ confidence 0.98 → no LLM call needed` },
     },
   ],
 };
+
+// ---------- DocuCheck: scenarios rebuilt from real reports produced by the POC ----------
+import r03 from './docucheck/dossier_03.json';
+import r05 from './docucheck/dossier_05.json';
+import r07 from './docucheck/dossier_07.json';
+import r11 from './docucheck/dossier_11.json';
+
+const TYPE_LABEL: Record<string, L> = {
+  formulaire: { en: 'registration form', fr: 'formulaire' },
+  identite: { en: 'ID card', fr: 'pièce d’identité' },
+  releve: { en: 'transcript', fr: 'relevé de notes' },
+  justificatif: { en: 'proof of address', fr: 'justificatif de domicile' },
+  inconnu: { en: 'unidentified', fr: 'non identifiée' },
+};
+const STATUT: Record<string, L> = {
+  conforme: { en: 'compliant', fr: 'conforme' },
+  incomplet: { en: 'incomplete', fr: 'incomplet' },
+  a_verifier: { en: 'to be checked', fr: 'à vérifier' },
+};
+const ms = (r: any, prefix: string) => r.etapes.find((e: any) => e.nom.startsWith(prefix))?.duree_ms ?? 0;
+const nf = (n: number, lang: 'en' | 'fr') => n.toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 2 });
+
+function fromReport(r: any, label: L): Scenario {
+  const both = (f: (lang: 'en' | 'fr') => string): L => ({ en: f('en'), fr: f('fr') });
+  const total = r.etapes.reduce((a: number, e: any) => a + e.duree_ms, 0);
+  const steps: Step[] = [];
+  steps.push({ kind: 'input', meta: both((l) => (l === 'fr' ? `${r.pieces.length} PDF déposés` : `${r.pieces.length} PDFs submitted`)),
+    body: both((l) => r.pieces.map((p: any) => `${p.fichier} (${p.methode_lecture === 'OCR' ? (l === 'fr' ? 'scanné' : 'scanned') : (l === 'fr' ? 'natif' : 'native')})`).join(', ')) });
+  steps.push({ kind: 'parse', meta: both((l) => `${nf(ms(r, 'lecture'), l)} ms`), code: true,
+    body: both((l) => r.pieces.map((p: any) => `${p.fichier}  ${p.methode_lecture === 'OCR' ? `OCR  conf. ${p.confiance_ocr ?? 0}` : (l === 'fr' ? 'texte natif' : 'native text')}`).join('\n')) });
+  steps.push({ kind: 'classify', code: true,
+    body: r.pieces.map((p: any) => `${p.fichier} → ${p.type}  (${p.confiance_classification})`).join('\n') });
+  const f = r.pieces.find((p: any) => p.type === 'identite') ?? r.pieces.find((p: any) => p.type === 'formulaire');
+  if (f) {
+    const keep = Object.fromEntries(Object.entries(f.champs).slice(0, 4).map(([k, v]: any) => [k, v.valeur]));
+    steps.push({ kind: 'fields', meta: both((l) => (l === 'fr' ? `${TYPE_LABEL[f.type].fr} · schéma Pydantic` : `${TYPE_LABEL[f.type].en} · Pydantic schema`)), code: true,
+      body: JSON.stringify(keep, null, 2) });
+  }
+  steps.push({ kind: 'verify', code: true,
+    body: both((l) => r.anomalies.length ? r.anomalies.map((a: any) => `${a.code}${a.fichier ? `  [${a.fichier}${a.page ? ` p.${a.page}` : ''}${a.champ ? ` · ${a.champ}` : ''}]` : ''}` + (l === 'fr' ? `\n  ${a.message}` : '')).join('\n') : (l === 'fr' ? 'aucune anomalie' : 'no anomaly')) });
+  steps.push({ kind: 'verdict',
+    meta: both((l) => (l === 'fr' ? `confiance ${String(r.confiance).replace('.', ',')} · seuil 0,80` : `confidence ${r.confiance} · threshold 0.80`)),
+    body: both((l) => `${STATUT[r.statut][l]}${r.revue_humaine ? (l === 'fr' ? ' → revue humaine' : ' → human review') : ''}`) });
+  steps.push({ kind: 'report', code: true,
+    body: both((l) => l === 'fr'
+      ? `temps total : ${nf(total, 'fr')} ms\njetons : ${r.jetons}   coût : ${r.cout_usd} $\nmodèle : règles + OCR Tesseract (aucun appel LLM)`
+      : `total time: ${nf(total, 'en')} ms\ntokens: ${r.jetons}   cost: $${r.cout_usd}\nmodel: rules + Tesseract OCR (no LLM call)`) });
+  return { label, steps };
+}
+
+demos.docucheck = [
+  fromReport(r07, { en: 'Name mismatch', fr: 'Nom différent' }),
+  fromReport(r05, { en: 'Missing piece', fr: 'Pièce manquante' }),
+  fromReport(r11, { en: 'Unreadable scan', fr: 'Scan illisible' }),
+  fromReport(r03, { en: 'Scanned, compliant', fr: 'Scanné, conforme' }),
+];

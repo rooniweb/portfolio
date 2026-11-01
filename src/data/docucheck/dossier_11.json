@@ -1,0 +1,217 @@
+{
+  "dossier": "dossier_11",
+  "statut": "a_verifier",
+  "confiance": 0.9,
+  "revue_humaine": true,
+  "anomalies": [
+    {
+      "code": "document_peu_lisible",
+      "gravite": "a_verifier",
+      "message": "Lecture OCR peu fiable (confiance 0.00) : pièce à contrôler à l'œil.",
+      "fichier": "piece_1.pdf",
+      "page": 1,
+      "champ": null
+    }
+  ],
+  "pieces": [
+    {
+      "fichier": "piece_1.pdf",
+      "type": "inconnu",
+      "confiance_classification": 0.0,
+      "methode_lecture": "OCR",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {}
+    },
+    {
+      "fichier": "piece_2.pdf",
+      "type": "identite",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "MBAYE",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : MBAYE"
+          }
+        },
+        "prenom": {
+          "valeur": "Coumba",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Coumba"
+          }
+        },
+        "naissance": {
+          "valeur": "2005-04-03",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 03/04/2005"
+          }
+        },
+        "numero": {
+          "valeur": "SPEC-1011",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Numero : SPEC-1011"
+          }
+        },
+        "expiration": {
+          "valeur": "2030-06-30",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Date d'expiration : 30/06/2030"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_3.pdf",
+      "type": "formulaire",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "MBAYE",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : MBAYE"
+          }
+        },
+        "prenom": {
+          "valeur": "Coumba",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Coumba"
+          }
+        },
+        "naissance": {
+          "valeur": "2005-04-03",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 03/04/2005"
+          }
+        },
+        "formation": {
+          "valeur": "Licence 1 Mathematiques",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Formation demandee : Licence 1 Mathematiques"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie L2",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Diplome d'acces : Baccalaureat serie L2"
+          }
+        },
+        "adresse": {
+          "valeur": "21 rue L11 Dakar",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 8,
+            "texte": "Adresse : 21 rue L11, Dakar"
+          }
+        },
+        "depot": {
+          "valeur": "2026-09-15",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 9,
+            "texte": "Date de depot : 15/09/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_4.pdf",
+      "type": "justificatif",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "titulaire": {
+          "valeur": "Coumba MBAYE",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Titulaire : Coumba MBAYE"
+          }
+        },
+        "adresse": {
+          "valeur": "21 rue L11 Dakar",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Adresse : 21 rue L11, Dakar"
+          }
+        },
+        "emission": {
+          "valeur": "2026-08-28",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date d'emission : 28/08/2026"
+          }
+        }
+      }
+    }
+  ],
+  "etapes": [
+    {
+      "nom": "lecture (texte natif ou OCR)",
+      "duree_ms": 616.3
+    },
+    {
+      "nom": "classification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "extraction",
+      "duree_ms": 0.5
+    },
+    {
+      "nom": "vérification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "décision",
+      "duree_ms": 0.0
+    }
+  ],
+  "modele": "règles + OCR Tesseract (aucun appel LLM)",
+  "jetons": 0,
+  "cout_usd": 0.0
+}

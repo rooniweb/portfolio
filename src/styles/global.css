@@ -436,3 +436,5 @@ html { scrollbar-color: color-mix(in srgb, var(--indigo) 55%, transparent) var(-
 .facets .plinks { margin-top: 10px; }
 
 .status.delivered { background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal); }
+.k-verdict::before { background: var(--indigo); }
+.k-verdict p { font-weight: 600; }

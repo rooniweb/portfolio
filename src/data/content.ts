@@ -155,6 +155,7 @@ export const ui = {
     personal: { en: 'Personal project', fr: 'Projet personnel' },
     delivered: { en: 'Delivered', fr: 'Livré' },
     study: { en: 'Study on fictional data', fr: 'Étude sur données fictives' },
+    poc: { en: 'Proof of concept', fr: 'POC' },
   },
 };
 
@@ -403,6 +404,34 @@ export const projects: Item[] = [
     ],
   },
   {
+    id: 'docucheck',
+    page: 'docucheck',
+    title: { en: 'DocuCheck', fr: 'DocuCheck' },
+    summary: {
+      en: 'Automated checking of university registration files.',
+      fr: 'Contrôle automatisé de dossiers d’inscription.',
+    },
+    status: 'poc',
+    tags: ['Python', 'FastAPI', 'Pydantic', 'Tesseract OCR', 'pytest'],
+    links: [{ label: { en: 'Code (poc branch)', fr: 'Code (branche poc)' }, url: 'https://github.com/rooniweb/docucheck/tree/poc/poc' }],
+    bullets: [
+      {
+        text: {
+          en: 'Reads each PDF of a registration file (native text or French OCR), identifies the piece from its content, extracts the fields into Pydantic schemas and checks completeness and consistency across pieces.',
+          fr: 'Lit chaque PDF d’un dossier d’inscription (texte natif ou OCR en français), identifie la pièce par son contenu, extrait les champs dans des schémas Pydantic et vérifie la complétude et la cohérence entre pièces.',
+        },
+        keywords: 'document processing ocr extraction classification verification pdf automation administrative',
+      },
+      {
+        text: {
+          en: 'Each anomaly cites the file, page and field; below a 0.80 confidence the file goes to human review. On 12 fictional files: 12/12 correctly classified, 34 ms per file (median, 1.0 s with OCR), $0 per file.',
+          fr: 'Chaque anomalie cite le fichier, la page et le champ ; sous 0,80 de confiance, le dossier part en revue humaine. Sur 12 dossiers fictifs : 12/12 bien classés, 34 ms par dossier (médiane, 1,0 s avec OCR), 0 $ par dossier.',
+        },
+        keywords: 'metrics accuracy latency cost human review guardrails',
+      },
+    ],
+  },
+  {
     id: 'sogolon',
     page: 'sogolon',
     title: { en: 'Sogolon', fr: 'Sogolon' },
@@ -554,7 +583,7 @@ export const stack: { group: L; items: Item2[]; note?: L }[] = [
   },
   {
     group: { en: 'Engineering', fr: 'Développement' },
-    items: ['Python', 'FastAPI', 'SQL', 'Java', 'Git', 'Linux', 'n8n'],
+    items: ['Python', 'FastAPI', 'Pydantic', 'pytest', 'SQL', 'Java', 'Git', 'Linux', 'n8n', 'Tesseract (OCR)'],
   },
   {
     group: { en: 'Analysis & BI', fr: 'Analyse & BI' },

@@ -4,7 +4,7 @@ import { person, ui, projects } from '../data/content';
 import { details } from '../data/details';
 import { t, href } from '../lib/i18n';
 import Replay from './Replay.astro';
-const demoKey: Record<string, 'migroo' | 'privasearch' | 'agent'> = { migroo: 'migroo', privasearch: 'privasearch', 'orange-money-agent': 'agent' };
+const demoKey: Record<string, 'migroo' | 'privasearch' | 'agent' | 'docucheck'> = { migroo: 'migroo', privasearch: 'privasearch', 'orange-money-agent': 'agent', docucheck: 'docucheck' };
 
 interface Props { lang: 'en' | 'fr'; slug: string }
 const { lang, slug } = Astro.props;

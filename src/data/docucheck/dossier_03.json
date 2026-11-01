@@ -1,0 +1,245 @@
+{
+  "dossier": "dossier_03",
+  "statut": "conforme",
+  "confiance": 0.8,
+  "revue_humaine": false,
+  "anomalies": [],
+  "pieces": [
+    {
+      "fichier": "piece_1.pdf",
+      "type": "formulaire",
+      "confiance_classification": 1.0,
+      "methode_lecture": "OCR",
+      "confiance_ocr": 0.798,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "FALL",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": ":Nom : FALL"
+          }
+        },
+        "prenom": {
+          "valeur": "Mariama",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Mariama un."
+          }
+        },
+        "naissance": {
+          "valeur": "2005-01-25",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 25/01/2005"
+          }
+        },
+        "formation": {
+          "valeur": "Licence 1 Informatique",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Formation demandee : Licence 1 Informatique"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie S1",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Diplome d'acces : Baccalaureat serie S1"
+          }
+        },
+        "adresse": {
+          "valeur": "13 rue D3 Saint-Louis",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 8,
+            "texte": ": Adresse : 13 rue D3, Saint-Louis"
+          }
+        },
+        "depot": {
+          "valeur": "2026-09-15",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 9,
+            "texte": "— Date de depot : 15/09/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_2.pdf",
+      "type": "identite",
+      "confiance_classification": 1.0,
+      "methode_lecture": "OCR",
+      "confiance_ocr": 0.889,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "FALL",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : FALL"
+          }
+        },
+        "prenom": {
+          "valeur": "Mariama",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Mariama"
+          }
+        },
+        "naissance": {
+          "valeur": "2005-01-25",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 25/01/2005"
+          }
+        },
+        "numero": {
+          "valeur": "SPEC-1003",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Numero : SPEC-1003"
+          }
+        },
+        "expiration": {
+          "valeur": "2030-06-30",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Date d'expiration : 30/06/2030 |"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_3.pdf",
+      "type": "releve",
+      "confiance_classification": 1.0,
+      "methode_lecture": "OCR",
+      "confiance_ocr": 0.853,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "FALL",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : FALL"
+          }
+        },
+        "prenom": {
+          "valeur": "Mariama",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Mariama"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie S1",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Diplome : Baccalaureat serie S1"
+          }
+        },
+        "obtention": {
+          "valeur": "2026-07-20",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Date d'obtention : 20/07/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_4.pdf",
+      "type": "justificatif",
+      "confiance_classification": 1.0,
+      "methode_lecture": "OCR",
+      "confiance_ocr": 0.935,
+      "pages": 1,
+      "champs": {
+        "titulaire": {
+          "valeur": "Mariama FALL",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Titulaire : Mariama FALL"
+          }
+        },
+        "adresse": {
+          "valeur": "13 rue D3 Saint-Louis",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Adresse : 13 rue D3, Saint-Louis"
+          }
+        },
+        "emission": {
+          "valeur": "2026-08-28",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date d'emission : 28/08/2026"
+          }
+        }
+      }
+    }
+  ],
+  "etapes": [
+    {
+      "nom": "lecture (texte natif ou OCR)",
+      "duree_ms": 4358.0
+    },
+    {
+      "nom": "classification",
+      "duree_ms": 0.2
+    },
+    {
+      "nom": "extraction",
+      "duree_ms": 0.7
+    },
+    {
+      "nom": "vérification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "décision",
+      "duree_ms": 0.0
+    }
+  ],
+  "modele": "règles + OCR Tesseract (aucun appel LLM)",
+  "jetons": 0,
+  "cout_usd": 0.0
+}

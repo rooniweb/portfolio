@@ -1,0 +1,217 @@
+{
+  "dossier": "dossier_05",
+  "statut": "incomplet",
+  "confiance": 0.95,
+  "revue_humaine": true,
+  "anomalies": [
+    {
+      "code": "piece_manquante",
+      "gravite": "bloquante",
+      "message": "Pièce obligatoire absente : justificatif.",
+      "fichier": null,
+      "page": null,
+      "champ": null
+    }
+  ],
+  "pieces": [
+    {
+      "fichier": "piece_2.pdf",
+      "type": "identite",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "CISSE",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : CISSE"
+          }
+        },
+        "prenom": {
+          "valeur": "Fatou",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Fatou"
+          }
+        },
+        "naissance": {
+          "valeur": "2003-05-19",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 19/05/2003"
+          }
+        },
+        "numero": {
+          "valeur": "SPEC-1005",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Numero : SPEC-1005"
+          }
+        },
+        "expiration": {
+          "valeur": "2030-06-30",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Date d'expiration : 30/06/2030"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_3.pdf",
+      "type": "formulaire",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "CISSE",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : CISSE"
+          }
+        },
+        "prenom": {
+          "valeur": "Fatou",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Fatou"
+          }
+        },
+        "naissance": {
+          "valeur": "2003-05-19",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 19/05/2003"
+          }
+        },
+        "formation": {
+          "valeur": "Licence 1 Mathematiques",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Formation demandee : Licence 1 Mathematiques"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie L2",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Diplome d'acces : Baccalaureat serie L2"
+          }
+        },
+        "adresse": {
+          "valeur": "15 rue F5 Dakar",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 8,
+            "texte": "Adresse : 15 rue F5, Dakar"
+          }
+        },
+        "depot": {
+          "valeur": "2026-09-15",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 9,
+            "texte": "Date de depot : 15/09/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_4.pdf",
+      "type": "releve",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "CISSE",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : CISSE"
+          }
+        },
+        "prenom": {
+          "valeur": "Fatou",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Fatou"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie L2",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Diplome : Baccalaureat serie L2"
+          }
+        },
+        "obtention": {
+          "valeur": "2026-07-20",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Date d'obtention : 20/07/2026"
+          }
+        }
+      }
+    }
+  ],
+  "etapes": [
+    {
+      "nom": "lecture (texte natif ou OCR)",
+      "duree_ms": 22.4
+    },
+    {
+      "nom": "classification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "extraction",
+      "duree_ms": 0.5
+    },
+    {
+      "nom": "vérification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "décision",
+      "duree_ms": 0.0
+    }
+  ],
+  "modele": "règles + OCR Tesseract (aucun appel LLM)",
+  "jetons": 0,
+  "cout_usd": 0.0
+}

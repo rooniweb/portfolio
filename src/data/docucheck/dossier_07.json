@@ -1,0 +1,254 @@
+{
+  "dossier": "dossier_07",
+  "statut": "a_verifier",
+  "confiance": 0.9,
+  "revue_humaine": true,
+  "anomalies": [
+    {
+      "code": "identite_differente",
+      "gravite": "a_verifier",
+      "message": "Nom différent entre le formulaire (DIOP) et la pièce d'identité (DIOUF).",
+      "fichier": "piece_1.pdf",
+      "page": 1,
+      "champ": "nom"
+    }
+  ],
+  "pieces": [
+    {
+      "fichier": "piece_1.pdf",
+      "type": "identite",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "DIOUF",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : DIOUF"
+          }
+        },
+        "prenom": {
+          "valeur": "Khady",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Khady"
+          }
+        },
+        "naissance": {
+          "valeur": "2005-02-14",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 14/02/2005"
+          }
+        },
+        "numero": {
+          "valeur": "SPEC-1007",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Numero : SPEC-1007"
+          }
+        },
+        "expiration": {
+          "valeur": "2030-06-30",
+          "source": {
+            "fichier": "piece_1.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Date d'expiration : 30/06/2030"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_2.pdf",
+      "type": "justificatif",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "titulaire": {
+          "valeur": "Khady DIOP",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Titulaire : Khady DIOP"
+          }
+        },
+        "adresse": {
+          "valeur": "17 rue H7 Dakar",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Adresse : 17 rue H7, Dakar"
+          }
+        },
+        "emission": {
+          "valeur": "2026-08-28",
+          "source": {
+            "fichier": "piece_2.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date d'emission : 28/08/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_3.pdf",
+      "type": "formulaire",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "DIOP",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : DIOP"
+          }
+        },
+        "prenom": {
+          "valeur": "Khady",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Khady"
+          }
+        },
+        "naissance": {
+          "valeur": "2005-02-14",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Date de naissance : 14/02/2005"
+          }
+        },
+        "formation": {
+          "valeur": "Licence 1 Economie-Gestion",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Formation demandee : Licence 1 Economie-Gestion"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie S2",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 7,
+            "texte": "Diplome d'acces : Baccalaureat serie S2"
+          }
+        },
+        "adresse": {
+          "valeur": "17 rue H7 Dakar",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 8,
+            "texte": "Adresse : 17 rue H7, Dakar"
+          }
+        },
+        "depot": {
+          "valeur": "2026-09-15",
+          "source": {
+            "fichier": "piece_3.pdf",
+            "page": 1,
+            "ligne": 9,
+            "texte": "Date de depot : 15/09/2026"
+          }
+        }
+      }
+    },
+    {
+      "fichier": "piece_4.pdf",
+      "type": "releve",
+      "confiance_classification": 1.0,
+      "methode_lecture": "texte natif",
+      "confiance_ocr": null,
+      "pages": 1,
+      "champs": {
+        "nom": {
+          "valeur": "DIOP",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 3,
+            "texte": "Nom : DIOP"
+          }
+        },
+        "prenom": {
+          "valeur": "Khady",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 4,
+            "texte": "Prenom : Khady"
+          }
+        },
+        "diplome": {
+          "valeur": "Baccalaureat serie S2",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 5,
+            "texte": "Diplome : Baccalaureat serie S2"
+          }
+        },
+        "obtention": {
+          "valeur": "2026-07-20",
+          "source": {
+            "fichier": "piece_4.pdf",
+            "page": 1,
+            "ligne": 6,
+            "texte": "Date d'obtention : 20/07/2026"
+          }
+        }
+      }
+    }
+  ],
+  "etapes": [
+    {
+      "nom": "lecture (texte natif ou OCR)",
+      "duree_ms": 20.7
+    },
+    {
+      "nom": "classification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "extraction",
+      "duree_ms": 1.1
+    },
+    {
+      "nom": "vérification",
+      "duree_ms": 0.1
+    },
+    {
+      "nom": "décision",
+      "duree_ms": 0.0
+    }
+  ],
+  "modele": "règles + OCR Tesseract (aucun appel LLM)",
+  "jetons": 0,
+  "cout_usd": 0.0
+}

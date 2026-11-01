@@ -1,0 +1,234 @@
+{
+  "dossiers": 12,
+  "taux_bien_classes": 1.0,
+  "matrice_confusion": {
+    "conforme": {
+      "conforme": 4,
+      "incomplet": 0,
+      "a_verifier": 0
+    },
+    "incomplet": {
+      "conforme": 0,
+      "incomplet": 2,
+      "a_verifier": 0
+    },
+    "a_verifier": {
+      "conforme": 0,
+      "incomplet": 0,
+      "a_verifier": 6
+    }
+  },
+  "temps_par_dossier_ms": {
+    "median": 33.5,
+    "max": 4359.0,
+    "median_sans_scan": 28.0,
+    "median_avec_scan": 1030.1
+  },
+  "cout_par_dossier_usd": 0.0,
+  "jetons_par_dossier": 0.0,
+  "revue_humaine": 9,
+  "statut_correct": 12,
+  "anomalies_attendues_trouvees": 12,
+  "alertes_supplementaires": 1,
+  "latence_mediane_ms": {
+    "lecture (texte natif ou OCR)": 32.1,
+    "classification": 0.1,
+    "extraction": 0.6,
+    "vérification": 0.1,
+    "décision": 0.0
+  },
+  "lecture_ms_par_page": {
+    "dossiers_sans_scan": 7.2,
+    "dossiers_avec_scan": 278.3
+  },
+  "jetons": 0,
+  "cout_usd": 0.0,
+  "modele": "règles + OCR Tesseract (aucun appel LLM)",
+  "detail": [
+    {
+      "dossier": "dossier_01",
+      "attendu": "conforme",
+      "obtenu": "conforme",
+      "confiance": 1.0,
+      "revue_humaine": false,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [],
+      "pages_ocr": 0,
+      "temps_ms": 31.9,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_02",
+      "attendu": "conforme",
+      "obtenu": "conforme",
+      "confiance": 1.0,
+      "revue_humaine": false,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [],
+      "pages_ocr": 0,
+      "temps_ms": 35.1,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_03",
+      "attendu": "conforme",
+      "obtenu": "conforme",
+      "confiance": 0.8,
+      "revue_humaine": false,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [],
+      "pages_ocr": 4,
+      "temps_ms": 4359.0,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_04",
+      "attendu": "conforme",
+      "obtenu": "conforme",
+      "confiance": 0.79,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [],
+      "pages_ocr": 2,
+      "temps_ms": 1573.7,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_05",
+      "attendu": "incomplet",
+      "obtenu": "incomplet",
+      "confiance": 0.95,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "piece_manquante"
+      ],
+      "pages_ocr": 0,
+      "temps_ms": 23.1,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_06",
+      "attendu": "incomplet",
+      "obtenu": "incomplet",
+      "confiance": 0.95,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "piece_manquante",
+        "champ_illisible"
+      ],
+      "pages_ocr": 1,
+      "temps_ms": 835.6,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_07",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "identite_differente"
+      ],
+      "pages_ocr": 0,
+      "temps_ms": 22.0,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_08",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "naissance_differente"
+      ],
+      "pages_ocr": 1,
+      "temps_ms": 1030.1,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_09",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "piece_expiree"
+      ],
+      "pages_ocr": 0,
+      "temps_ms": 28.0,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_10",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "justificatif_trop_ancien"
+      ],
+      "pages_ocr": 0,
+      "temps_ms": 24.6,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_11",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "document_peu_lisible"
+      ],
+      "pages_ocr": 1,
+      "temps_ms": 617.0,
+      "jetons": 0,
+      "cout_usd": 0.0
+    },
+    {
+      "dossier": "dossier_12",
+      "attendu": "a_verifier",
+      "obtenu": "a_verifier",
+      "confiance": 0.9,
+      "revue_humaine": true,
+      "statut_correct": true,
+      "anomalies_attendues_trouvees": true,
+      "anomalies": [
+        "date_incoherente"
+      ],
+      "pages_ocr": 0,
+      "temps_ms": 29.5,
+      "jetons": 0,
+      "cout_usd": 0.0
+    }
+  ]
+}

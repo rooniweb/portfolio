@@ -27,7 +27,7 @@ const body = (s: Step) => (typeof s.body === 'string' ? s.body : null);
             {s.meta && <span class="rp-meta" set:html={t(s.meta)} />}
           </div>
           {s.code
-            ? <pre><code>{body(s)}</code></pre>
+            ? <pre><code set:html={t(s.body)} /></pre>
             : <p set:html={t(s.body)} />}
         </li>
       ))}

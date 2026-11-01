@@ -191,7 +191,69 @@ const riskChart = (() => {
   return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly 60-day default rate">${g}</svg>`;
 })();
 
+// ---------- DocuCheck ----------
+const dcSvg = diagram({
+  w: 992, h: 330,
+  title: { en: 'DocuCheck pipeline', fr: 'Pipeline DocuCheck' },
+  groups: [
+    { x: 14, y: 14, w: 964, h: 150, label: { en: 'Each piece', fr: 'Chaque pièce' } },
+    { x: 14, y: 180, w: 964, h: 136, label: { en: 'The whole file', fr: 'Le dossier entier' } },
+  ],
+  nodes: [
+    { x: 34, y: 62, w: 170, h: 70, kind: 'io', label: { en: 'PDFs', fr: 'PDF' }, sub: { en: 'native or scanned', fr: 'natifs ou scannés' } },
+    { x: 238, y: 62, w: 210, h: 70, label: { en: 'Reading', fr: 'Lecture' }, sub: { en: 'text or OCR · page + line', fr: 'texte ou OCR · page + ligne' } },
+    { x: 482, y: 62, w: 210, h: 70, label: { en: 'Classification', fr: 'Classification' }, sub: { en: 'type from content', fr: 'type par le contenu' } },
+    { x: 726, y: 62, w: 232, h: 70, label: { en: 'Extraction', fr: 'Extraction' }, sub: { en: 'Pydantic schema + source', fr: 'schéma Pydantic + source' } },
+    { x: 34, y: 222, w: 260, h: 70, label: { en: 'Verification', fr: 'Vérification' }, sub: { en: 'completeness · consistency', fr: 'complétude · cohérence' } },
+    { x: 330, y: 222, w: 250, h: 70, kind: 'accent', label: { en: 'Decision', fr: 'Décision' }, sub: { en: '< 0.80 → human review', fr: '< 0,80 → revue humaine' } },
+    { x: 616, y: 222, w: 342, h: 70, kind: 'io', label: { en: 'Report', fr: 'Rapport' }, sub: { en: 'file · page · field, time, cost', fr: 'fichier · page · champ, temps, coût' } },
+  ],
+  edges: [
+    { points: [[204, 97], [236, 97]] },
+    { points: [[448, 97], [480, 97]] },
+    { points: [[692, 97], [724, 97]] },
+    { points: [[842, 132], [842, 170], [164, 170], [164, 220]] },
+    { points: [[294, 257], [328, 257]] },
+    { points: [[580, 257], [614, 257]] },
+  ],
+});
+
 export const details: Detail[] = [
+  {
+    slug: 'docucheck',
+    projectId: 'docucheck',
+    lead: {
+      en: 'A higher-education institution receives registration files as PDFs: a form, an ID card, a transcript and a proof of address. DocuCheck reads every piece, identifies it, extracts its fields, checks that the file is complete and consistent, and writes a report that cites the file, page and field of each anomaly. This proof of concept runs without any language model and is measured end to end.',
+      fr: 'Un établissement d’enseignement supérieur reçoit des dossiers d’inscription en PDF : formulaire, pièce d’identité, relevé de notes, justificatif de domicile. DocuCheck lit chaque pièce, l’identifie, en extrait les champs, vérifie que le dossier est complet et cohérent, et rédige un rapport qui cite le fichier, la page et le champ de chaque anomalie. Ce POC tourne sans aucun modèle de langage et il est mesuré de bout en bout.',
+    },
+    diagramTitle: { en: 'From a set of PDFs to a decision a person can check', fr: 'D’un lot de PDF à une décision vérifiable' },
+    svg: dcSvg,
+    table: {
+      head: [{ en: 'Metric (12 fictional files)', fr: 'Mesure (12 dossiers fictifs)' }, { en: 'Result', fr: 'Résultat' }],
+      rows: [
+        [{ en: 'Files correctly classified (compliant / incomplete / to check)', fr: 'Dossiers bien classés (conforme / incomplet / à vérifier)' }, { en: '12 / 12 (100%)', fr: '12 / 12 (100 %)' }],
+        [{ en: 'Time per file, median', fr: 'Temps par dossier, médiane' }, { en: '34 ms', fr: '34 ms' }],
+        [{ en: 'Time per file with scanned pieces (OCR), median', fr: 'Temps par dossier avec pièces scannées (OCR), médiane' }, { en: '1.0 s', fr: '1,0 s' }],
+        [{ en: 'Slowest file (4 scanned pieces)', fr: 'Dossier le plus lent (4 pièces scannées)' }, { en: '4.4 s', fr: '4,4 s' }],
+        [{ en: 'Cost per file', fr: 'Coût par dossier' }, { en: '$0 (no model call)', fr: '0 $ (aucun appel de modèle)' }],
+        [{ en: 'Sent to human review', fr: 'Envoyés en revue humaine' }, { en: '9 / 12', fr: '9 / 12' }],
+      ],
+      highlight: 0,
+    },
+    steps: [
+      { title: { en: 'Read every piece', fr: 'Lire chaque pièce' }, text: { en: 'Native PDF text when there is one, otherwise Tesseract OCR in French. Every line keeps its page and number, and OCR lines keep a confidence score.', fr: 'Le texte natif du PDF quand il existe, sinon l’OCR Tesseract en français. Chaque ligne garde sa page et son numéro, et les lignes OCR gardent un score de confiance.' } },
+      { title: { en: 'Identify the piece', fr: 'Identifier la pièce' }, text: { en: 'The type comes from the content, not the file name: form, ID card, transcript or proof of address.', fr: 'Le type vient du contenu, pas du nom du fichier : formulaire, pièce d’identité, relevé ou justificatif.' } },
+      { title: { en: 'Extract into schemas', fr: 'Extraire dans des schémas' }, text: { en: 'Fields are cleaned of scan noise and validated by Pydantic schemas, each with its source line.', fr: 'Les champs sont nettoyés du bruit de scan et validés par des schémas Pydantic, chacun avec sa ligne source.' } },
+      { title: { en: 'Check the file', fr: 'Contrôler le dossier' }, text: { en: 'Mandatory pieces present; same name, first name and birth date everywhere; ID valid on the filing date; proof of address under 90 days; consistent diploma date; readable scans.', fr: 'Pièces obligatoires présentes ; même nom, prénom et date de naissance partout ; pièce d’identité valide à la date de dépôt ; justificatif de moins de 90 jours ; date de diplôme cohérente ; scans lisibles.' } },
+      { title: { en: 'Decide and report', fr: 'Décider et rendre compte' }, text: { en: 'Compliant, incomplete or to be checked, with a confidence score; below 0.80 a person reviews the file. The report lists each anomaly with its file, page and field, plus the time of each step and the cost.', fr: 'Conforme, incomplet ou à vérifier, avec un score de confiance ; sous 0,80, une personne revoit le dossier. Le rapport liste chaque anomalie avec son fichier, sa page et son champ, ainsi que le temps de chaque étape et le coût.' } },
+    ],
+    notes: [
+      { en: 'The 12 files cover 4 compliant files (native, scanned, mixed) and 8 defects: two missing pieces, a different name, a different birth date, an expired ID, an old proof of address, an unreadable scan and an impossible diploma date.', fr: 'Les 12 dossiers couvrent 4 dossiers conformes (natifs, scannés, mixtes) et 8 défauts : deux pièces manquantes, un nom différent, une date de naissance différente, une pièce expirée, un justificatif trop ancien, un scan illisible et une date de diplôme impossible.' },
+      { en: 'One extra alert: OCR missed the number of a scanned ID card. The file is still correctly classified, and the gap is flagged for a person.', fr: 'Une alerte en trop : l’OCR a manqué le numéro d’une pièce d’identité scannée. Le dossier reste bien classé, et le manque est signalé pour une personne.' },
+      { en: 'Limits: rules are tuned to known templates; real documents with varied layouts will need LLM extraction. The Docker image and CI workflow are written but not yet run.', fr: 'Limites : les règles sont adaptées à des gabarits connus ; de vrais documents aux mises en page variées demanderont une extraction par LLM. L’image Docker et le workflow de CI sont écrits mais pas encore exécutés.' },
+      { en: 'Next: Docling for reading, LLM extraction through LiteLLM (local model and API compared on accuracy, time and cost per file), TypeSafe Jev for routing, n8n for intake.', fr: 'Suite : Docling pour la lecture, extraction par LLM via LiteLLM (modèle local et API comparés en précision, temps et coût par dossier), TypeSafe Jev pour le routage, n8n pour le dépôt.' },
+    ],
+  },
   {
     slug: 'sogolon',
     projectId: 'sogolon',
