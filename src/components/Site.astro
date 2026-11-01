@@ -112,6 +112,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
               <h3 set:html={t(f.title)} />
               <p set:html={t(f.text)} />
               <p class="chips">{f.tags.map((tg) => <span class="tag">{tg}</span>)}</p>
+              {f.page && <p class="plinks"><a href={href(lang, `/projects/${f.page}/`)} data-path={`/projects/${f.page}/`} set:html={t({ en: 'See the study and demo', fr: 'Voir l’étude et la démo' })} /></p>}
             </li>
           ))}
         </ul>
@@ -187,7 +188,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
       {projects.map((it, idx) => (
         <article class={idx === 0 ? 'proj feature' : 'proj'}>
           <div class="proj-meta">
-            <h3>{it.title.en}</h3>
+            <h3 set:html={t(it.title)} />
             <p class="sum" set:html={t(it.summary!)} />
             <p class="chips">
               {it.status && <span class={`status ${it.status}`} set:html={t(ui.status[it.status])} />}

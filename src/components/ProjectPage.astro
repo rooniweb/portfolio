@@ -19,7 +19,7 @@ const title = `${p.title.en} · ${person.name}`;
     <a class="back" href={href(lang, '/#projects')} data-path="/#projects" set:html={t(ui.backHome)} />
 
     <header class="d-head">
-      <h1>{p.title.en}</h1>
+      <h1 set:html={t(p.title)} />
       <p class="d-sum" set:html={t(p.summary!)} />
       <p class="chips">
         {p.status && <span class={`status ${p.status}`} set:html={t(ui.status[p.status])} />}
@@ -34,21 +34,43 @@ const title = `${p.title.en} · ${person.name}`;
       <p class="dg-hint" set:html={t(ui.diagramNote)} />
     </figure>
 
-    {slug === 'sogolon' && (
+    {d.chart && (
+      <figure class="d-figure d-chart">
+        <figcaption set:html={t(d.chart.title)} />
+        <div class="dg-scroll" tabindex="0" set:html={d.chart.svg} />
+        <p class="dg-note" set:html={t(d.chart.note)} />
+      </figure>
+    )}
+
+    {d.poc && (
       <section class="d-demo">
         <h2 set:html={t(ui.pocTitle)} />
-        <p set:html={t(ui.pocLead)} />
-        <p class="plinks"><a href="/demos/sogolon/" target="_blank" rel="noopener" set:html={t(ui.pocOpen)} /></p>
+        <p set:html={t(d.poc.lead)} />
+        <p class="plinks"><a href={d.poc.url} target="_blank" rel="noopener" set:html={t(ui.pocOpen)} /></p>
         <div class="poc-frame">
-          <iframe src="/demos/sogolon/" title="Sogolon demo" loading="lazy"></iframe>
+          <iframe src={d.poc.url} title={`${p.title.en} demo`} loading="lazy" style={d.poc.height ? `height:${d.poc.height}px` : undefined}></iframe>
         </div>
       </section>
     )}
 
-    {d.results && (
+    {(d.results || d.table) && (
       <section class="d-results">
         <h2 set:html={t(ui.resultsTitle)} />
-        <ul class="paras">{d.results.map((r) => <li><span set:html={t(r)} /></li>)}</ul>
+        {d.table && (
+          <div class="r-table">
+            <table>
+              <thead><tr>{d.table.head.map((h) => <th set:html={t(h)} />)}</tr></thead>
+              <tbody>
+                {d.table.rows.map((row, i) => (
+                  <tr class={i === d.table!.highlight ? 'hi' : i === d.table!.muted ? 'mu' : ''}>
+                    {row.map((c) => <td set:html={t(c as any)} />)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <ul class="paras">{(d.results ?? []).map((r) => <li><span set:html={t(r)} /></li>)}</ul>
       </section>
     )}
 
@@ -89,7 +111,7 @@ const title = `${p.title.en} · ${person.name}`;
 
     <nav class="d-next" aria-label={ui.nextProject[lang]}>
       <span set:html={t(ui.nextProject)} />
-      <a href={href(lang, `/projects/${next.slug}/`)} data-path={`/projects/${next.slug}/`}>{nextP.title.en}</a>
+      <a href={href(lang, `/projects/${next.slug}/`)} data-path={`/projects/${next.slug}/`} set:html={t(nextP.title)} />
     </nav>
   </main>
 </Layout>

@@ -13,6 +13,9 @@ export type Detail = {
   example?: { caption: L; code: string };
   notes?: L[];
   results?: L[];
+  poc?: { url: string; lead: L; height?: number };
+  chart?: { title: L; svg: string; note: L };
+  table?: { head: L[]; rows: (L | string)[][]; highlight?: number; muted?: number };
 };
 
 const W = 140, H = 64;
@@ -138,10 +141,67 @@ const sogolonSvg = diagram({
   ],
 });
 
+// ---------- Payment default risk ----------
+const riskSvg = diagram({
+  w: 992, h: 300,
+  title: { en: 'Modelling approach', fr: 'Démarche de modélisation' },
+  groups: [
+    { x: 14, y: 14, w: 964, h: 128, label: { en: 'Data, built as of the issue date', fr: 'Données, construites à la date d’émission' } },
+    { x: 14, y: 158, w: 964, h: 128, label: { en: 'Models, judged on 5 unseen months', fr: 'Modèles, jugés sur 5 mois jamais vus' } },
+  ],
+  nodes: [
+    { x: 34, y: 58, w: 200, h: 64, kind: 'io', label: { en: '100,885 invoices', fr: '100 885 factures' }, sub: { en: '5,000 accounts, simulated', fr: '5 000 comptes, simulés' } },
+    { x: 270, y: 58, w: 210, h: 64, label: { en: 'Target', fr: 'Cible' }, sub: { en: 'unpaid 60 days after due', fr: 'impayée à échéance + 60 j' } },
+    { x: 516, y: 58, w: 210, h: 64, label: { en: '23 features', fr: '23 variables' }, sub: { en: 'no leakage', fr: 'sans fuite' } },
+    { x: 762, y: 58, w: 196, h: 64, label: { en: 'Time-based split', fr: 'Découpage temporel' }, sub: { en: 'train · valid · test', fr: 'appr. · valid. · test' } },
+    { x: 34, y: 202, w: 200, h: 64, label: { en: 'Business rule', fr: 'Règle métier' }, sub: { en: 'AUC 0.650', fr: 'AUC 0,650' } },
+    { x: 270, y: 202, w: 210, h: 64, label: { en: 'Logistic regression', fr: 'Régression logistique' }, sub: { en: 'AUC 0.728', fr: 'AUC 0,728' } },
+    { x: 516, y: 202, w: 210, h: 64, kind: 'accent', label: { en: 'LightGBM + SHAP', fr: 'LightGBM + SHAP' }, sub: { en: 'AUC 0.725 · kept', fr: 'AUC 0,725 · retenu' } },
+    { x: 762, y: 202, w: 196, h: 64, kind: 'io', label: { en: 'Oracle ceiling', fr: 'Plafond oracle' }, sub: { en: 'AUC 0.797', fr: 'AUC 0,797' } },
+  ],
+  edges: [
+    { points: [[234, 90], [268, 90]] },
+    { points: [[480, 90], [514, 90]] },
+    { points: [[726, 90], [760, 90]] },
+  ],
+});
+
+const months = {"2024-01": 0.1772, "2024-02": 0.1822, "2024-03": 0.1823, "2024-04": 0.1856, "2024-05": 0.1723, "2024-06": 0.2389, "2024-07": 0.1714, "2024-08": 0.16, "2024-09": 0.1622, "2024-10": 0.197, "2024-11": 0.1595, "2024-12": 0.1872, "2025-01": 0.1546, "2025-02": 0.1588, "2025-03": 0.1549, "2025-04": 0.1564, "2025-05": 0.1651, "2025-06": 0.2353, "2025-07": 0.1597, "2025-08": 0.165, "2025-09": 0.1473, "2025-10": 0.1806, "2025-11": 0.1595, "2025-12": 0.1659, "2026-01": 0.1513, "2026-02": 0.1604, "2026-03": 0.1599, "2026-04": 0.1503, "2026-05": 0.2097, "2026-06": 0.1504, "2026-07": 0.1417};
+const riskChart = (() => {
+  const W = 760, H = 240, l = 44, r = 34, t = 16, b = 34;
+  const keys = Object.keys(months), vals = keys.map((k) => months[k]);
+  const lo = 0.12, hi = 0.26;
+  const X = (i: number) => l + (i * (W - l - r)) / (keys.length - 1);
+  const Y = (v: number) => t + ((hi - v) * (H - t - b)) / (hi - lo);
+  let g = '';
+  for (const v of [0.14, 0.18, 0.22, 0.26]) {
+    g += `<line class="ch-grid" x1="${l}" x2="${W - r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ch-tick" x="${l - 8}" y="${Y(v) + 4}" text-anchor="end">${Math.round(v * 100)}%</text>`;
+  }
+  keys.forEach((k, i) => {
+    if (k.endsWith('-01') || k.endsWith('-07')) g += `<text class="ch-tick" x="${X(i)}" y="${H - 10}" text-anchor="middle">${k}</text>`;
+  });
+  const d = vals.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(' ');
+  const area = d + ` L${X(vals.length - 1)} ${H - b} L${X(0)} ${H - b} Z`;
+  g += `<path class="ch-area" d="${area}"/><path class="ch-line" d="${d}"/>`;
+  const peaks = ['2024-06', '2025-06', '2026-05'];
+  peaks.forEach((k) => {
+    const i = keys.indexOf(k);
+    g += `<circle class="ch-peak" cx="${X(i)}" cy="${Y(vals[i])}" r="4.5"/><text class="ch-label" x="${X(i)}" y="${Y(vals[i]) - 10}" text-anchor="middle">Tabaski</text>`;
+  });
+  return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly 60-day default rate">${g}</svg>`;
+})();
+
 export const details: Detail[] = [
   {
     slug: 'sogolon',
     projectId: 'sogolon',
+    poc: {
+      url: '/demos/sogolon/',
+      lead: {
+        en: 'A reduced, self-contained version running in your browser: a fictional SQLite database, the guardrails replayed live, and the exact prompt the model would receive. Queries are pre-written and replayed; no AI model is called. The demo is in French.',
+        fr: 'Une version réduite et autonome qui tourne dans votre navigateur : une base SQLite fictive, les garde-fous rejoués en direct et le prompt exact que recevrait le modèle. Les requêtes sont pré-écrites et rejouées ; aucun modèle d’IA n’est appelé.',
+      },
+    },
     lead: {
       en: 'Sogolon is an assistant that turns a sales or collections question asked in French into a SQL query, runs it read-only and shows the query, the result and a chart. Built for a West African telecom operator after several commercial systems were merged into one.',
       fr: 'Sogolon est une assistante qui traduit une question de pilotage commercial ou de recouvrement posée en français en requête SQL, l’exécute en lecture seule et affiche la requête, le résultat et un graphique. Réalisée pour un opérateur télécom d’Afrique de l’Ouest, après la fusion de plusieurs systèmes commerciaux en un seul.',
@@ -175,6 +235,58 @@ export const details: Detail[] = [
 
 Question : Comptes avec plus de 3 factures impayées`,
     },
+  },
+  {
+    slug: 'payment-risk',
+    projectId: 'risk',
+    lead: {
+      en: 'A collections team cannot call every customer. It usually reminds late, once the delay shows in the aged balance, and somewhat at random. Can we estimate, as soon as an invoice is issued, the probability that it will still be unpaid 60 days after its due date, and remind the right customers first?',
+      fr: 'Une équipe de recouvrement ne peut pas relancer tout le monde. Elle relance tard, une fois le retard visible dans la balance âgée, et un peu au hasard des listes. Peut-on estimer, dès l’émission d’une facture, la probabilité qu’elle reste impayée 60 jours après l’échéance, pour relancer d’abord ceux qui en ont besoin ?',
+    },
+    diagramTitle: { en: 'From raw invoices to a score the team can act on', fr: 'Des factures brutes à un score exploitable' },
+    svg: riskSvg,
+    poc: {
+      url: '/demos/risque-impayes/',
+      lead: {
+        en: 'Interactive results and a simulator: the trained LightGBM model, exported to JSON, runs in your browser. Change an invoice or load a test example to see its score, its risk level and what drives it. The demo is in French; all data is fictional.',
+        fr: 'Résultats interactifs et simulateur : le modèle LightGBM entraîné, exporté en JSON, tourne dans votre navigateur. Modifiez une facture ou chargez un exemple du test pour voir son score, son niveau de risque et ce qui le fait varier. Toutes les données sont fictives.',
+      },
+      height: 1150,
+    },
+    chart: {
+      title: { en: 'Exploration: 60-day default rate by billing month', fr: 'Exploration : taux d’impayé à 60 jours par mois de facturation' },
+      svg: riskChart,
+      note: { en: 'Peaks in Tabaski months; by payment method, 5% defaults with direct debit against 24% with cash.', fr: 'Pics les mois de Tabaski ; par mode de paiement, 5 % d’impayés en prélèvement contre 24 % en espèces.' },
+    },
+    table: {
+      head: [{ en: 'Model', fr: 'Modèle' }, { en: 'AUC', fr: 'AUC' }, { en: 'PR-AUC', fr: 'PR-AUC' }, { en: 'Lift top 10%', fr: 'Lift top 10 %' }, { en: 'Defaults in top 20%', fr: 'Impayées dans le top 20 %' }],
+      rows: [
+        [{ en: 'Business rule (worst delay + open debts)', fr: 'Règle métier (pire retard + impayés en cours)' }, { en: '0.650', fr: '0,650' }, { en: '0.280', fr: '0,280' }, { en: '× 2.1', fr: '× 2,1' }, { en: '36%', fr: '36 %' }],
+        [{ en: 'Logistic regression', fr: 'Régression logistique' }, { en: '0.728', fr: '0,728' }, { en: '0.363', fr: '0,363' }, { en: '× 2.7', fr: '× 2,7' }, { en: '45%', fr: '45 %' }],
+        [{ en: 'LightGBM (kept)', fr: 'LightGBM (retenu)' }, { en: '0.725', fr: '0,725' }, { en: '0.364', fr: '0,364' }, { en: '× 2.8', fr: '× 2,8' }, { en: '45%', fr: '45 %' }],
+        [{ en: 'Oracle (true probability, ceiling)', fr: 'Oracle (vraie probabilité, plafond)' }, { en: '0.797', fr: '0,797' }, { en: '0.517', fr: '0,517' }, { en: '× 3.7', fr: '× 3,7' }, { en: '55%', fr: '55 %' }],
+      ],
+      highlight: 2,
+      muted: 3,
+    },
+    steps: [
+      { title: { en: 'Simulate realistic data', fr: 'Simuler des données réalistes' }, text: { en: '5,000 postpaid accounts and about 100,000 monthly invoices from January 2024 to September 2026, generated with a fixed seed: payer profiles, hardship periods, calendar effects, abnormal bills, invalid contacts, and interactions between them. 17.2% of invoices end up unpaid at 60 days.', fr: '5 000 comptes postpayés et environ 100 000 factures mensuelles de janvier 2024 à septembre 2026, générés avec une graine fixe : profils de payeurs, périodes de difficulté, effets de calendrier, factures anormales, contacts invalides et leurs interactions. 17,2 % des factures restent impayées à 60 jours.' } },
+      { title: { en: 'Engineer features without leakage', fr: 'Construire des variables sans fuite' }, text: { en: '23 features computed at the issue date with only what was known that day: past delays, status of the previous invoice, 12-month regularity, open debts, trend, amount ratio. A previous invoice paid after that date counts as still unpaid.', fr: '23 variables calculées à la date d’émission avec ce que l’on savait ce jour-là : retards passés, statut de la facture précédente, régularité sur 12 mois, impayés en cours, tendance, ratio de montant. Une facture précédente payée après cette date compte comme encore impayée.' } },
+      { title: { en: 'Split by time', fr: 'Découper dans le temps' }, text: { en: 'Training on 2024–2025, validation for early stopping, threshold and grid search, then a test on 5 months never seen (March to July 2026, 14,050 invoices).', fr: 'Apprentissage sur 2024-2025, validation pour l’arrêt anticipé, le seuil et la recherche en grille, puis test sur 5 mois jamais vus (mars à juillet 2026, 14 050 factures).' } },
+      { title: { en: 'Compare against a rule and a ceiling', fr: 'Comparer à une règle et à un plafond' }, text: { en: 'Business rule, logistic regression and LightGBM. Because the data is simulated, the true probability is known: it gives the best AUC reachable and separates what the model misses from what is simply unpredictable.', fr: 'Règle métier, régression logistique et LightGBM. Comme les données sont simulées, la vraie probabilité est connue : elle donne l’AUC maximale atteignable et sépare ce que le modèle rate de ce qui est imprévisible.' } },
+      { title: { en: 'Turn the score into action', fr: 'Passer du score à l’action' }, text: { en: 'Below 10%: automatic SMS at the due date. 10 to 25%: personalised reminder 3 days before, with a mobile money link. 25 to 50%: agent call at the due date and contact check. Above 50%: priority call and a payment plan before the debt builds up.', fr: 'Moins de 10 % : SMS automatique à l’échéance. 10 à 25 % : rappel personnalisé 3 jours avant, avec lien mobile money. 25 à 50 % : appel d’un agent dès l’échéance et vérification du contact. Plus de 50 % : appel prioritaire et proposition d’échéancier avant que la dette ne s’accumule.' } },
+    ],
+    notes: [
+      { en: 'Honest reading: LightGBM and logistic regression tie and both clearly beat the rule. LightGBM is kept for its per-invoice SHAP explanations and native handling of missing values and categories; logistic regression remains a credible, easier-to-audit alternative.', fr: 'Lecture honnête : LightGBM et la régression logistique font jeu égal et battent nettement la règle. LightGBM est retenu pour ses explications SHAP par facture et sa gestion native des valeurs manquantes et des catégories ; la régression logistique reste une alternative crédible, plus simple à auditer.' },
+      { en: 'The gap to the oracle comes from sudden hardship that no payment history can announce; more feature engineering did not close it. Other sources would be needed: top-ups, usage, complaints.', fr: 'L’écart avec l’oracle vient de difficultés soudaines qu’aucun historique de paiement n’annonce ; plus de feature engineering n’y a rien changé. Il faudrait d’autres sources : recharges, usage, réclamations.' },
+      { en: 'SHAP shows a cheap lever: an invoice sent by SMS to an invalid number never arrives, so cleaning contacts lowers risk.', fr: 'SHAP fait ressortir un levier peu coûteux : une facture envoyée par SMS à un numéro invalide n’arrive jamais ; fiabiliser les contacts réduit le risque.' },
+      { en: 'Limits: the 35% reminder effectiveness is an assumption to measure with an A/B test; an uplift model would target customers who respond to reminders; no sensitive variable is used and the score never triggers an automatic action.', fr: 'Limites : les 35 % d’efficacité des relances sont une hypothèse à mesurer par un test A/B ; un modèle d’uplift ciblerait les clients sensibles aux relances ; aucune variable sensible n’est utilisée et le score ne déclenche aucune action automatique.' },
+      { en: 'Stack: Python, pandas, NumPy, scikit-learn, LightGBM, SHAP, matplotlib, Jupyter; web demo in plain HTML and JavaScript.', fr: 'Stack : Python, pandas, NumPy, scikit-learn, LightGBM, SHAP, matplotlib, Jupyter ; démo web en HTML et JavaScript natif.' },
+    ],
+    results: [
+      { en: 'Calibrated probabilities (Brier 0.122). Threshold chosen on validation (0.22): 34% precision and 50% recall on the test set.', fr: 'Probabilités calibrées (Brier 0,122). Seuil choisi sur la validation (0,22) : précision 34 % et rappel 50 % sur le test.' },
+      { en: 'Simulated campaign reminding 20% of invoices each month, assuming a reminder avoids 35% of targeted defaults: about 8.3 M FCFA avoided over 5 months with the model, against 6.9 M with the business rule and 4.2 M at random, so about twice the random result.', fr: 'Campagne simulée relançant 20 % des factures chaque mois, en supposant qu’une relance évite 35 % des impayés ciblés : environ 8,3 M FCFA évités sur 5 mois avec le modèle, contre 6,9 M avec la règle métier et 4,2 M au hasard, soit environ deux fois le hasard.' },
+    ],
   },
   {
     slug: 'migroo',

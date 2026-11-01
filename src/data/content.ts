@@ -154,10 +154,11 @@ export const ui = {
     paused: { en: 'Prototype on hold', fr: 'Prototype en pause' },
     personal: { en: 'Personal project', fr: 'Projet personnel' },
     delivery: { en: 'Near delivery', fr: 'Proche de la livraison' },
+    study: { en: 'Study on fictional data', fr: 'Étude sur données fictives' },
   },
 };
 
-export const dataFacets: { title: L; text: L; tags: string[] }[] = [
+export const dataFacets: { title: L; text: L; tags: string[]; page?: string }[] = [
   {
     title: { en: 'BI and reporting', fr: 'BI et reporting' },
     text: {
@@ -173,6 +174,7 @@ export const dataFacets: { title: L; text: L; tags: string[] }[] = [
       fr: 'Scorer le risque d’impayés par compte pour prioriser les relances, et comparer un modèle de gradient boosting à un modèle de décision.',
     },
     tags: ['LightGBM', 'TypeSafe Jev', 'n8n', 'Python'],
+    page: 'payment-risk',
   },
   {
     title: { en: 'Automated reporting', fr: 'Reporting automatisé' },
@@ -430,6 +432,41 @@ export const projects: Item[] = [
           fr: 'Une base de connaissance métier courte et des commentaires de colonnes documentent les pièges du schéma ; les requêtes validées sont rejouées sans aucun jeton, et les rapports récurrents utilisent des requêtes fixes pour rester reproductibles.',
         },
         keywords: 'knowledge base few-shot reporting evaluation cost tokens',
+      },
+    ],
+  },
+  {
+    id: 'risk',
+    page: 'payment-risk',
+    title: { en: 'Payment default risk', fr: 'Risque d’impayés' },
+    summary: {
+      en: 'Machine learning to target collection reminders.',
+      fr: 'Machine learning pour cibler les relances de recouvrement.',
+    },
+    status: 'study',
+    tags: ['Python', 'pandas', 'scikit-learn', 'LightGBM', 'SHAP'],
+    links: [{ label: { en: 'Try the demo', fr: 'Essayer la démo' }, url: '/demos/risque-impayes/' }],
+    bullets: [
+      {
+        text: {
+          en: 'Predict, as soon as a telecom invoice is issued, the probability that it is still unpaid 60 days after its due date, so the collection team calls the right customers first.',
+          fr: 'Prédire, dès l’émission d’une facture télécom, la probabilité qu’elle reste impayée 60 jours après l’échéance, pour que l’équipe de recouvrement relance d’abord les bons clients.',
+        },
+        keywords: 'machine learning prediction classification data science scoring collections lightgbm',
+      },
+      {
+        text: {
+          en: 'Leakage-free feature engineering at the issue date, time-based split, and LightGBM benchmarked against logistic regression and a business rule: both models tie (AUC 0.725 and 0.728) and clearly beat the rule (0.650).',
+          fr: 'Feature engineering sans fuite à la date d’émission, découpage temporel, et LightGBM comparé à une régression logistique et à une règle métier : les deux modèles font jeu égal (AUC 0,725 et 0,728) et battent nettement la règle (0,650).',
+        },
+        keywords: 'feature engineering evaluation auc logistic regression statistics validation',
+      },
+      {
+        text: {
+          en: 'SHAP explanations per invoice and a simulated campaign reminding 20% of invoices: about twice as many defaults reached as random targeting, under a stated 35% reminder-effectiveness assumption.',
+          fr: 'Explications SHAP par facture et campagne simulée relançant 20 % des factures : environ deux fois plus d’impayés atteints qu’en relançant au hasard, sous une hypothèse affichée de 35 % d’efficacité des relances.',
+        },
+        keywords: 'shap explainability simulation business value roi',
       },
     ],
   },
