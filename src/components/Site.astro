@@ -1,6 +1,6 @@
 ---
 import Layout from './Layout.astro';
-import { person, ui, path, services, experience, projects, stack, education, buildCorpus } from '../data/content';
+import { person, ui, path, services, dataFacets, experience, projects, stack, education, buildCorpus } from '../data/content';
 import Replay from './Replay.astro';
 import { t, href } from '../lib/i18n';
 import retrieverCode from '../scripts/retriever.js?raw';
@@ -20,7 +20,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
   <main id="top">
     <section class="hero wrap">
       <div class="hero-text">
-      <p class="who"><span set:html={t(person.role)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(person.location)} /></p>
+      <p class="who"><span set:html={t(person.role)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(ui.trainedAs)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(person.location)} /></p>
       <h1 set:html={t(ui.heroTitle)} />
       <p class="lead" set:html={t(ui.heroLead)} />
       <p class="ctas">
@@ -95,8 +95,53 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
       </article>
 
       <div class="services-demo">
-        <h3 set:html={t({ en: 'Email triage with n8n and an LLM', fr: 'Tri d’e-mails avec n8n et un LLM' })} />
+        <h3 set:html={t({ en: 'Email triage: n8n, a decision layer (TypeSafe Jev) and an LLM', fr: 'Tri d’e-mails : n8n, une couche de décision (TypeSafe Jev) et un LLM' })} />
         <Replay demo="email" />
+      </div>
+    </section>
+
+    <section id="data" class="wrap block" aria-labelledby="data-title">
+      <div class="sec-head">
+        <h2 id="data-title" set:html={t(ui.dataTitle)} />
+        <p set:html={t(ui.dataLead)} />
+      </div>
+      <div class="data-grid">
+        <ul class="facets">
+          {dataFacets.map((f) => (
+            <li>
+              <h3 set:html={t(f.title)} />
+              <p set:html={t(f.text)} />
+              <p class="chips">{f.tags.map((tg) => <span class="tag">{tg}</span>)}</p>
+            </li>
+          ))}
+        </ul>
+        <figure class="dash" aria-labelledby="dash-title">
+          <div class="dash-head">
+            <span id="dash-title" class="dash-title" set:html={t(ui.dashTitle)} />
+            <span class="rp-badge" set:html={t(ui.demoBadge)} />
+          </div>
+          <div class="kpis">
+            <div><span class="k-val" set:html={t({ en: '48,210', fr: '48 210' })} /><span class="k-lab" set:html={t({ en: 'invoices sent', fr: 'factures envoyées' })} /></div>
+            <div><span class="k-val" set:html={t({ en: '95.8%', fr: '95,8 %' })} /><span class="k-lab" set:html={t({ en: 'delivered', fr: 'remises' })} /></div>
+            <div><span class="k-val warn" set:html={t({ en: '2,034', fr: '2 034' })} /><span class="k-lab" set:html={t({ en: 'failed sends', fr: 'échecs d’envoi' })} /></div>
+          </div>
+          <p class="dash-sub" set:html={t({ en: 'Failure causes', fr: 'Causes des échecs' })} />
+          <ul class="causes">
+            {[
+              [{ en: 'Invalid address', fr: 'Adresse invalide' }, 812],
+              [{ en: 'Mailbox full', fr: 'Boîte pleine' }, 534],
+              [{ en: 'Rejected by recipient server', fr: 'Rejet du serveur destinataire' }, 401],
+              [{ en: 'Send server timeout', fr: 'Délai du serveur d’envoi' }, 287],
+            ].map(([lab, n]) => (
+              <li>
+                <span class="c-lab" set:html={t(lab as any)} />
+                <span class="c-bar"><span style={`width:${(100 * (n as number)) / 812}%`}></span></span>
+                <span class="c-val">{n}</span>
+              </li>
+            ))}
+          </ul>
+          <figcaption set:html={t(ui.dashNote)} />
+        </figure>
       </div>
     </section>
 
@@ -193,6 +238,7 @@ const migrooChain = ['Sources', 'Parsing', 'Chunking', 'Metadata', 'Embeddings',
             <li data-chunk={`edu#${i + 1}`}>
               <strong set:html={t(e.title)} />
               <span set:html={t(e.org)} />
+              {(e as any).note && <small set:html={t((e as any).note)} />}
               {e.link && <a href={e.link} rel="noopener" set:html={t(ui.verify)} />}
             </li>
           ))}

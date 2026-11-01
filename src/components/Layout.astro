@@ -46,6 +46,7 @@ const navPath = (id: string) => (home ? undefined : `/#${id}`);
       <nav aria-label="Sections">
         <a href={nav('ask')} data-path={navPath('ask')} set:html={t(ui.nav.demo)} />
         <a href={nav('services')} data-path={navPath('services')} set:html={t(ui.nav.services)} />
+        <a href={nav('data')} data-path={navPath('data')} set:html={t(ui.nav.data)} />
         <a href={nav('path')} data-path={navPath('path')} set:html={t(ui.nav.path)} />
         <a href={nav('work')} data-path={navPath('work')} set:html={t(ui.nav.work)} />
         <a href={nav('projects')} data-path={navPath('projects')} set:html={t(ui.nav.projects)} />

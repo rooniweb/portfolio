@@ -2,7 +2,7 @@
 // fictional and labelled as such on the page.
 import type { L } from './content';
 
-export type StepKind = 'input' | 'trigger' | 'think' | 'tool' | 'obs' | 'retrieved' | 'llm' | 'route' | 'answer' | 'refuse';
+export type StepKind = 'input' | 'trigger' | 'think' | 'decide' | 'extract' | 'tool' | 'obs' | 'retrieved' | 'llm' | 'route' | 'answer' | 'refuse';
 export type Step = { kind: StepKind; meta?: L | string; body: L | string; code?: boolean };
 export type Scenario = { label: L; steps: Step[] };
 
@@ -10,6 +10,8 @@ export const kindLabel: Record<StepKind, L> = {
   input: { en: 'Input', fr: 'Entrée' },
   trigger: { en: 'Trigger', fr: 'Déclencheur' },
   think: { en: 'Reasoning', fr: 'Raisonnement' },
+  decide: { en: 'Decision · TypeSafe Jev', fr: 'Décision · TypeSafe Jev' },
+  extract: { en: 'Extraction · LLM', fr: 'Extraction · LLM' },
   tool: { en: 'Tool call', fr: 'Appel d’outil' },
   obs: { en: 'Tool result', fr: 'Résultat' },
   retrieved: { en: 'Retrieved', fr: 'Passage retrouvé' },
@@ -26,27 +28,24 @@ export const demos: Record<string, Scenario[]> = {
       steps: [
         { kind: 'input', meta: { en: 'New email · client@example.com', fr: 'Nouvel e-mail · client@example.com' }, body: { en: '“Hello, my October invoice charges the fibre subscription twice. Can you correct it?”', fr: '« Bonjour, ma facture d’octobre compte deux fois l’abonnement fibre. Pouvez-vous corriger ? »' } },
         { kind: 'trigger', body: { en: 'n8n picks up the email from the shared mailbox.', fr: 'n8n récupère l’e-mail dans la boîte partagée.' } },
-        { kind: 'llm', code: true, body: `{
-  "category": "billing_complaint",
-  "priority": "high",
-  "fields": { "invoice_month": "2026-10", "product": "fibre" },
-  "confidence": 0.94
-}` },
+        { kind: 'decide', meta: { en: 'typed questions · probabilities', fr: 'questions typées · probabilités' }, code: true, body: `category  (choice) → billing_complaint   p = 0.93
+urgency   (score)  → high                p = 0.81
+reply_needed (yes/no) → yes              p = 0.97
+confidence 0.91 ≥ threshold 0.80 → automatic routing` },
+        { kind: 'extract', code: true, body: `{ "invoice_month": "2026-10", "product": "fibre",
+  "issue": "duplicate subscription line" }` },
         { kind: 'route', body: { en: 'Sent to the billing queue, tagged high priority, with the fields pre-filled.', fr: 'Envoyé à la file facturation, marqué prioritaire, avec les champs pré-remplis.' } },
       ],
     },
     {
-      label: { en: 'Moving house', fr: 'Déménagement' },
+      label: { en: 'Ambiguous request', fr: 'Demande ambiguë' },
       steps: [
-        { kind: 'input', meta: { en: 'New email · customer@example.com', fr: 'Nouvel e-mail · abonne@example.com' }, body: { en: '“I am moving on the 15th and would like to transfer my line to my new address.”', fr: '« Je déménage le 15 et je voudrais transférer ma ligne à ma nouvelle adresse. »' } },
+        { kind: 'input', meta: { en: 'New email · customer@example.com', fr: 'Nouvel e-mail · abonne@example.com' }, body: { en: '“Since the move nothing works and I was charged anyway. What do I do?”', fr: '« Depuis le déménagement rien ne marche et on m’a quand même facturé. Je fais comment ? »' } },
         { kind: 'trigger', body: { en: 'n8n picks up the email from the shared mailbox.', fr: 'n8n récupère l’e-mail dans la boîte partagée.' } },
-        { kind: 'llm', code: true, body: `{
-  "category": "address_change",
-  "priority": "normal",
-  "fields": { "move_date": "15th", "service": "line transfer" },
-  "confidence": 0.91
-}` },
-        { kind: 'route', body: { en: 'Sent to customer service with a reply template suggested.', fr: 'Envoyé au service client avec un modèle de réponse proposé.' } },
+        { kind: 'decide', meta: { en: 'typed questions · probabilities', fr: 'questions typées · probabilités' }, code: true, body: `category  (choice) → technical_issue     p = 0.48
+                     billing_complaint   p = 0.41
+confidence 0.52 < threshold 0.80 → human review` },
+        { kind: 'route', body: { en: 'Too uncertain to route automatically: sent to an agent’s review queue with both candidate categories.', fr: 'Trop incertain pour un routage automatique : envoyé en revue humaine avec les deux catégories candidates.' } },
       ],
     },
     {
@@ -54,13 +53,9 @@ export const demos: Record<string, Scenario[]> = {
       steps: [
         { kind: 'input', meta: { en: 'New email · news@example.org', fr: 'Nouvel e-mail · news@example.org' }, body: { en: '“Our monthly digest: five trends to follow this autumn.”', fr: '« Notre lettre mensuelle : cinq tendances à suivre cet automne. »' } },
         { kind: 'trigger', body: { en: 'n8n picks up the email from the shared mailbox.', fr: 'n8n récupère l’e-mail dans la boîte partagée.' } },
-        { kind: 'llm', code: true, body: `{
-  "category": "no_action",
-  "priority": "low",
-  "fields": {},
-  "confidence": 0.97
-}` },
-        { kind: 'route', body: { en: 'Archived. Nobody has to open it.', fr: 'Archivé. Personne n’a besoin de l’ouvrir.' } },
+        { kind: 'decide', meta: { en: 'typed questions · probabilities', fr: 'questions typées · probabilités' }, code: true, body: `action_needed (yes/no) → no   p = 0.98
+confidence 0.98 → no LLM call needed` },
+        { kind: 'route', body: { en: 'Archived. Nobody has to open it, and no LLM tokens were spent.', fr: 'Archivé. Personne n’a besoin de l’ouvrir, et aucun jeton LLM n’a été dépensé.' } },
       ],
     },
   ],

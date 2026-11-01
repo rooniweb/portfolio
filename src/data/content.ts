@@ -17,6 +17,7 @@ export const ui = {
   nav: {
     demo: { en: 'Ask', fr: 'Interroger' },
     services: { en: 'Services', fr: 'Services' },
+    data: { en: 'Data', fr: 'Data' },
     path: { en: 'Path', fr: 'Parcours' },
     work: { en: 'Experience', fr: 'Expérience' },
     projects: { en: 'Projects', fr: 'Projets' },
@@ -70,7 +71,7 @@ export const ui = {
   },
   demoPipeline: ['tokenize', 'BM25', 'trigram TF-IDF', 'RRF', 'cite'],
 
-  pathTitle: { en: 'From software to retrieval', fr: 'Du logiciel au RAG' },
+  pathTitle: { en: 'From statistics to retrieval', fr: 'De la statistique au RAG' },
   pathLead: {
     en: 'Each step built the next one. Data engineering is not a detour in this path: it is the reason my RAG systems hold up.',
     fr: 'Chaque étape a préparé la suivante. Le data engineering n’est pas un détour dans ce parcours : c’est ce qui rend mes systèmes RAG fiables.',
@@ -103,6 +104,17 @@ export const ui = {
   },
   passionCaption: { en: 'My AI legends, illustrated.', fr: 'Mes légendes de l’IA, en illustration.' },
   passionAlt: { en: 'Illustration of three AI pioneers standing together', fr: 'Illustration de trois pionniers de l’IA côte à côte' },
+  trainedAs: { en: 'Data scientist by training', fr: 'Data scientist de formation' },
+  dataTitle: { en: 'Data science and BI', fr: 'Data science et BI' },
+  dataLead: {
+    en: 'I trained in statistics and decision computing before moving into AI. The same habits carry into every project: reliable data first, indicators the business actually uses, and analyses that lead to a decision.',
+    fr: 'Je me suis formé à la statistique et à l’informatique décisionnelle avant d’aller vers l’IA. Les mêmes réflexes guident chaque projet : des données fiables d’abord, des indicateurs que les métiers utilisent vraiment, et des analyses qui débouchent sur une décision.',
+  },
+  dashTitle: { en: 'Invoice email delivery', fr: 'Envoi des factures par e-mail' },
+  dashNote: {
+    en: 'Reconstruction of a Power BI dashboard I built, with fictional figures.',
+    fr: 'Reconstitution d’un tableau de bord Power BI que j’ai conçu, avec des chiffres fictifs.',
+  },
   servicesTitle: { en: 'What I do for business teams', fr: 'Ce que je fais pour les métiers' },
   servicesLead: {
     en: 'Retrieval is one tool among others. Most of the value comes from finding where a team loses time, then choosing the lightest thing that fixes it: an automation, a search engine or an agent.',
@@ -145,6 +157,33 @@ export const ui = {
   },
 };
 
+export const dataFacets: { title: L; text: L; tags: string[] }[] = [
+  {
+    title: { en: 'BI and reporting', fr: 'BI et reporting' },
+    text: {
+      en: 'Consolidate scattered sources, define the indicators with the business, and keep dashboards reliable over time.',
+      fr: 'Consolider des sources dispersées, définir les indicateurs avec les métiers et garder des tableaux de bord fiables dans la durée.',
+    },
+    tags: ['Power BI', 'Tableau', 'SQL', 'Excel'],
+  },
+  {
+    title: { en: 'Predictive analytics', fr: 'Analyse prédictive' },
+    text: {
+      en: 'Score the risk of unpaid invoices per account to prioritise collection reminders, and compare a gradient boosting model with a decision model.',
+      fr: 'Scorer le risque d’impayés par compte pour prioriser les relances, et comparer un modèle de gradient boosting à un modèle de décision.',
+    },
+    tags: ['LightGBM', 'TypeSafe Jev', 'n8n', 'Python'],
+  },
+  {
+    title: { en: 'Automated reporting', fr: 'Reporting automatisé' },
+    text: {
+      en: 'Generate recurring reports automatically: Claude skills turn the data into a formatted, commented report, and fixed queries keep the figures reproducible.',
+      fr: 'Générer automatiquement les rapports récurrents : des skills Claude transforment les données en rapport mis en forme et commenté, et des requêtes fixes gardent des chiffres reproductibles.',
+    },
+    tags: ['Claude skills', 'SQL', 'Sogolon'],
+  },
+];
+
 export const services: { title: L; text: L; proof: L }[] = [
   {
     title: { en: 'Spot the friction', fr: 'Repérer les irritants' },
@@ -173,6 +212,14 @@ export const services: { title: L; text: L; proof: L }[] = [
 ];
 
 export const path = [
+  {
+    title: { en: 'Statistics & data science', fr: 'Statistique & data science' },
+    when: { en: 'Master’s', fr: 'Master 2' },
+    text: {
+      en: 'Statistics and decision computing; thesis on time-series forecasting, classical models versus deep learning.',
+      fr: 'Statistique et informatique décisionnelle ; mémoire sur la prévision de séries temporelles, modèles classiques contre deep learning.',
+    },
+  },
   {
     title: { en: 'Software engineering', fr: 'Software engineering' },
     when: '2023',
@@ -223,7 +270,7 @@ export type Item = {
 export const experience: Item[] = [
   {
     id: 'sonatel',
-    title: { en: 'Data Migration Engineer', fr: 'Ingénieur Migrations de Données' },
+    title: { en: 'Data Migration & Data AI Engineer', fr: 'Ingénieur Migrations de Données & Data IA' },
     org: { en: 'Sonatel (Orange Senegal)', fr: 'Sonatel (Orange Sénégal)' },
     when: '2024 – 2026',
     bullets: [
@@ -247,6 +294,20 @@ export const experience: Item[] = [
           fr: 'Scripts Python d’inventaire, de contrôle qualité et de complétude, et de réconciliation source-cible pour détecter et corriger les anomalies avant bascule.',
         },
         keywords: 'data quality reconciliation python pandas qualité scale',
+      },
+      {
+        text: {
+          en: 'Built a Power BI dashboard consolidating the reports of several invoice email servers: a single view of which customers received their invoice or not, of failed sends and of their causes.',
+          fr: 'Conception d’un tableau de bord Power BI consolidant les rapports de plusieurs serveurs d’envoi de factures par e-mail : une vue globale des clients ayant reçu ou non leur facture, des échecs d’envoi et de leurs causes.',
+        },
+        keywords: 'power bi dashboard reporting kpi bi tableau indicators business intelligence',
+      },
+      {
+        text: {
+          en: 'For collections, developed a LightGBM model predicting the risk of unpaid invoices per customer account to prioritise reminders, compared it with the TypeSafe Jev decision model, and automated reminder alerts with n8n, with results served through a chatbot.',
+          fr: 'Pour le recouvrement, modèle LightGBM de prédiction du risque d’impayés par compte client pour prioriser les relances, comparé au modèle de décision TypeSafe Jev, avec des alertes de relance automatisées sous n8n et une restitution via un chatbot.',
+        },
+        keywords: 'machine learning lightgbm prediction scoring risk data science statistics jev decision model',
       },
       {
         text: {
@@ -448,15 +509,19 @@ export const stack: { group: L; items: string[]; note?: L }[] = [
   },
   {
     group: { en: 'LLMs & agents', fr: 'LLM & agents' },
-    items: ['OpenAI (GPT)', 'Ollama', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', 'Structured outputs', 'Evals'],
+    items: ['OpenAI (GPT)', 'Ollama', 'TypeSafe Jev', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'ReAct', 'Structured outputs', 'Evals'],
   },
   {
     group: { en: 'Engineering', fr: 'Développement' },
-    items: ['Python', 'FastAPI', 'SQL', 'Java', 'Git', 'n8n'],
+    items: ['Python', 'FastAPI', 'SQL', 'Java', 'Git', 'Linux', 'n8n'],
   },
   {
-    group: { en: 'Data', fr: 'Données' },
-    items: ['Talend Open Studio', 'Apache Airflow', 'Google BigQuery', 'Snowflake', 'pandas', 'Oracle', 'MySQL'],
+    group: { en: 'Analysis & BI', fr: 'Analyse & BI' },
+    items: ['Power BI', 'Tableau', 'Excel', 'KPI design', 'SQL reporting', 'Statistics', 'Time-series forecasting', 'LightGBM', 'Automated reporting with Claude skills'],
+  },
+  {
+    group: { en: 'Data engineering', fr: 'Data engineering' },
+    items: ['Talend Open Studio', 'Apache Airflow', 'Google Cloud Platform (BigQuery, Cloud Storage)', 'Snowflake', 'pandas', 'Oracle', 'MySQL'],
   },
   {
     group: { en: 'Evaluated', fr: 'Évalués' },
@@ -470,8 +535,9 @@ export const stack: { group: L; items: string[]; note?: L }[] = [
 
 export const education = [
   {
-    title: { en: 'M.Sc. Data Science', fr: 'M.Sc. Data Science' },
+    title: { en: 'Master’s in Statistics and Decision Computing (SID)', fr: 'Master 2 Statistique et Informatique Décisionnelle (SID)' },
     org: { en: 'Université Alioune Diop de Bambey, Senegal', fr: 'Université Alioune Diop de Bambey, Sénégal' },
+    note: { en: 'Thesis: classical and deep learning models compared for time-series forecasting.', fr: 'Mémoire : comparaison de modèles classiques et de deep learning pour la prévision de séries temporelles.' },
   },
   {
     title: { en: 'Data Analyst Nanodegree', fr: 'Data Analyst Nanodegree' },
@@ -527,14 +593,15 @@ export function buildCorpus(): Chunk[] {
     });
   });
   education.forEach((e, i) => {
-    const text = { en: `${e.title.en}, ${e.org.en}.`, fr: `${e.title.fr}, ${e.org.fr}.` };
+    const n = (e as any).note as L | undefined;
+    const text = { en: `${e.title.en}, ${e.org.en}.` + (n ? ' ' + n.en : ''), fr: `${e.title.fr}, ${e.org.fr}.` + (n ? ' ' + n.fr : '') };
     out.push({
       id: `edu#${i + 1}`,
       path: { en: `Education › ${e.title.en}`, fr: `Formation › ${e.title.fr}` },
       anchor: 'stack',
       text,
       parent: text,
-      keywords: 'education degree diploma master formation diplôme',
+      keywords: 'education degree diploma master formation diplôme statistics data science statistique',
     });
   });
   out.push({

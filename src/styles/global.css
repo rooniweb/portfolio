@@ -175,7 +175,7 @@ details pre { white-space: pre-wrap; font: 400 13px/1.55 var(--mono); color: var
 .sec-head p { color: var(--muted); max-width: 62ch; margin: 14px 0 0; }
 
 /* Path — a real sequence */
-.path { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); counter-reset: step; }
+.path { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); counter-reset: step; }
 .path li { position: relative; padding: 28px 22px 0 0; border-top: 2px solid var(--line); counter-increment: step; }
 .path li::before { content: counter(step); position: absolute; top: -15px; left: 0; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--paper); border: 2px solid var(--indigo); color: var(--indigo); font: 600 13px/1 var(--mono); }
 .path li:last-child { border-top-color: var(--indigo); }
@@ -385,3 +385,32 @@ html { scrollbar-color: color-mix(in srgb, var(--indigo) 55%, transparent) var(-
 @media (max-width: 760px) { .poc-frame iframe { height: 1250px; } }
 .d-results { padding-top: clamp(40px, 5vw, 56px); max-width: 760px; }
 .d-results h2 { font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.02em; margin: 0 0 16px; }
+
+/* Data science & BI */
+.data-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 32px 48px; align-items: start; }
+@media (max-width: 900px) { .data-grid { grid-template-columns: minmax(0, 1fr); } }
+.facets { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+.facets li { padding-top: 16px; border-top: 2px solid var(--indigo); }
+.facets h3 { margin: 0 0 6px; font-size: 20px; letter-spacing: -0.015em; }
+.facets p { margin: 0; color: var(--muted); }
+.facets .chips { margin-top: 10px; }
+.dash { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: clamp(16px, 2.5vw, 24px); display: grid; gap: 16px; }
+.dash-head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.dash-title { font-weight: 700; font-size: 17px; }
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kpis > div { display: grid; gap: 2px; padding: 12px; border-radius: 12px; background: var(--indigo-wash); }
+.k-val { font-size: clamp(20px, 2.4vw, 26px); font-weight: 800; letter-spacing: -0.02em; color: var(--indigo-ink); font-variant-numeric: tabular-nums; }
+.k-val.warn { color: var(--ink); }
+.k-lab { font-size: 13px; color: var(--muted); }
+.dash-sub { margin: 0; font-weight: 600; font-size: 14px; }
+.causes { list-style: none; margin: -6px 0 0; padding: 0; display: grid; gap: 8px; }
+.causes li { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 3rem; gap: 10px; align-items: center; font-size: 14px; }
+.c-lab { color: var(--muted); }
+.c-bar { height: 12px; border-radius: 4px; background: var(--indigo-wash); overflow: hidden; }
+.c-bar span { display: block; height: 100%; background: var(--indigo); border-radius: 4px; }
+.c-val { text-align: right; font-variant-numeric: tabular-nums; }
+.dash figcaption { font-size: 13px; color: var(--muted); }
+@media (max-width: 480px) { .kpis { grid-template-columns: minmax(0, 1fr); } .causes li { grid-template-columns: minmax(0, 1fr) 3rem; } .c-bar { grid-column: 1 / -1; grid-row: 2; } }
+.edu small { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.k-decide::before { background: var(--saffron); border-color: var(--saffron); }
+.k-decide .rp-kind { color: var(--ink); }
