@@ -26,6 +26,11 @@ const title = `${p.title.en} · ${person.name}`;
         {(p.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
       </p>
       <p class="d-lead" set:html={t(d.lead)} />
+      {p.links && (
+        <p class="plinks">
+          {p.links.map((l) => <a href={l.url} target={l.url.startsWith('http') ? '_blank' : undefined} rel="noopener" set:html={t(l.label)} />)}
+        </p>
+      )}
     </header>
 
     <figure class="d-figure">

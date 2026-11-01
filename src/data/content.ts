@@ -445,7 +445,11 @@ export const projects: Item[] = [
     },
     status: 'study',
     tags: ['Python', 'pandas', 'scikit-learn', 'LightGBM', 'SHAP'],
-    links: [{ label: { en: 'Try the demo', fr: 'Essayer la démo' }, url: '/demos/risque-impayes/' }],
+    links: [
+      { label: { en: 'Try the demo', fr: 'Essayer la démo' }, url: '/demos/risque-impayes/' },
+      { label: { en: 'Notebook', fr: 'Notebook' }, url: 'https://github.com/rooniweb/risque-impayes/blob/main/notebooks/analyse_risque_impayes.ipynb' },
+      { label: { en: 'Code', fr: 'Code' }, url: 'https://github.com/rooniweb/risque-impayes' },
+    ],
     bullets: [
       {
         text: {
