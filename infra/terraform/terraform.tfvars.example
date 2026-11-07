@@ -1,0 +1,4 @@
+# Copier en terraform.tfvars puis adapter. Ce fichier ne contient aucun secret.
+existing_project_id = "prj_xxxxxxxxxxxxxxxxxxxxxxxx"
+# custom_domain     = "aronadiatta.com"
+# rag_api_url       = "https://mon-backend.example/answer"
