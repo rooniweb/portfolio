@@ -32,4 +32,5 @@ resource "vercel_project_environment_variable" "rag_api" {
   key        = "PUBLIC_RAG_API"
   value      = var.rag_api_url
   target     = ["production", "preview"]
+  sensitive  = false # URL publique, lue par le navigateur
 }
