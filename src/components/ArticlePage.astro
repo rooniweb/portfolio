@@ -9,8 +9,9 @@ const { lang } = Astro.props;
 const pageOf: Record<string, string> = { migroo: 'migroo', privasearch: 'privasearch' };
 ---
 <Layout lang={lang} title={`${article.title[lang]} · ${person.name}`} description={article.dek[lang]}>
-  <main id="top" class="wrap article">
-    <a class="back" href={href(lang, '/#services')} data-path="/#services" set:html={t(ui.backHome)} />
+  <main id="main" class="inner">
+  <div class="wrap frame">
+    <a class="back" href={href(lang, '/articles/')} data-path="/articles/" set:html={t(ui.backArticles)} />
     <header class="a-head">
       <p class="a-meta"><span set:html={t(ui.articleLabel)} /><span aria-hidden="true">/</span><span set:html={t(article.date)} /></p>
       <h1 set:html={t(article.title)} />
@@ -48,5 +49,10 @@ const pageOf: Record<string, string> = { migroo: 'migroo', privasearch: 'privase
         </section>
       ))}
     </div>
+    <aside class="cta-band a-end">
+      <p set:html={t(ui.articleCta)} />
+      <a class="btn" href={`mailto:${person.email}`} set:html={t(ui.cta)} />
+    </aside>
+  </div>
   </main>
 </Layout>

@@ -5,32 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Risque d'impayés — LightGBM</title>
 <meta name="description" content="Prédiction du risque d'impayé de factures télécom avec LightGBM : résultats sur données fictives et simulateur où le modèle tourne dans le navigateur.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 <script>
   // Follow the portfolio theme; hide the back link when embedded.
   if (window.self !== window.top) document.documentElement.classList.add("integre");
   try { var th = localStorage.getItem("theme"); if (th === "dark" || th === "light") document.documentElement.setAttribute("data-theme", th); } catch (e) {}
 </script>
 <style>
+  @font-face { font-family: "Geist"; src: url("/fonts/geist-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: "Geist Mono"; src: url("/fonts/geist-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
   :root {
-    --fond: #f2f3f8; --surface: #ffffff; --surface-2: #e9ebf5; --bord: #d8dbe8;
-    --texte: #12152e; --texte-2: #565b78; --accent: #2b3a9e; --accent-fond: #e3e6f6; --accent-texte: #1b2470;
-    --bleu: #0e7c6b; --gris: #9a9fb8; --ok: #2f7d4f; --ok-fond: #e6f3eb; --alerte: #a8670f; --ko: #b42318; --ko-fond: #fdecea;
-    --rayon: 10px; --police: "Schibsted Grotesk", system-ui, sans-serif;
+    --fond: #0e0f11; --surface: #141619; --surface-2: #1a1d21; --bord: #2a2e34; --texte: #ebe8e1; --texte-2: #a39e94; --accent: #f0b13c; --accent-fond: rgba(240,177,60,0.12); --accent-texte: #f4bd57; --sur-accent: #0e0f11; --bleu: #f0b13c; --gris: #6f6b64; --ok: #5cc38a; --ok-fond: #17321f; --alerte: #e0b04a; --ko: #f07167; --ko-fond: #3a1c1a;
+    --rayon: 2px; --police: "Geist", system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, Consolas, monospace;
+    color-scheme: dark;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --fond: #0e1126; --surface: #151a36; --surface-2: #1c2250; --bord: #2a3057; --texte: #e8eaf6; --texte-2: #a0a6c6;
-      --accent: #8f9dff; --accent-fond: #1c2250; --accent-texte: #c2c9ff; --bleu: #4fd1b9; --gris: #6f76a0;
-      --ok: #5cc38a; --ok-fond: #17321f; --alerte: #e0b04a; --ko: #f07167; --ko-fond: #3a1c1a;
-    }
-  }
-  :root[data-theme="dark"] {
-    --fond: #0e1126; --surface: #151a36; --surface-2: #1c2250; --bord: #2a3057; --texte: #e8eaf6; --texte-2: #a0a6c6;
-    --accent: #8f9dff; --accent-fond: #1c2250; --accent-texte: #c2c9ff; --bleu: #4fd1b9; --gris: #6f76a0;
-    --ok: #5cc38a; --ok-fond: #17321f; --alerte: #e0b04a; --ko: #f07167; --ko-fond: #3a1c1a;
+  :root[data-theme="light"] {
+    --fond: #f5f3ee; --surface: #ffffff; --surface-2: #ecE9e2; --bord: #d5d0c5; --texte: #17181b; --texte-2: #5a564e; --accent: #8a5800; --accent-fond: rgba(240,177,60,0.18); --accent-texte: #8a5800; --sur-accent: #ffffff; --bleu: #8a5800; --gris: #9a958b; --ok: #2f7d4f; --ok-fond: #e6f3eb; --alerte: #a8670f; --ko: #b42318; --ko-fond: #fdecea;
+    color-scheme: light;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--fond); color: var(--texte); font: 15px/1.5 var(--police); }

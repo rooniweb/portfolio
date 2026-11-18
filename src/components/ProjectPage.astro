@@ -15,8 +15,9 @@ const nextP = projects.find((x) => x.id === next.projectId)!;
 const title = `${p.title.en} · ${person.name}`;
 ---
 <Layout lang={lang} title={title} description={d.lead[lang]}>
-  <main id="top" class="wrap detail">
-    <a class="back" href={href(lang, '/#projects')} data-path="/#projects" set:html={t(ui.backHome)} />
+  <main id="main" class="inner">
+  <div class="wrap frame">
+    <a class="back" href={href(lang, '/#cases')} data-path="/#cases" set:html={t(ui.backHome)} />
 
     <header class="d-head">
       <h1 set:html={t(p.title)} />
@@ -119,5 +120,6 @@ const title = `${p.title.en} · ${person.name}`;
       <span set:html={t(ui.nextProject)} />
       <a href={href(lang, `/projects/${next.slug}/`)} data-path={`/projects/${next.slug}/`} set:html={t(nextP.title)} />
     </nav>
+  </div>
   </main>
 </Layout>

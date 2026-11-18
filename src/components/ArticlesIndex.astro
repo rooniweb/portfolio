@@ -1,0 +1,40 @@
+---
+import Layout from './Layout.astro';
+import { person, ui } from '../data/content';
+import { article } from '../data/article';
+import { t, href } from '../lib/i18n';
+
+interface Props { lang: 'en' | 'fr' }
+const { lang } = Astro.props;
+// Only finished articles are listed. Drafts live in docs/articles-portfolio.md until they are complete.
+const items = [{ slug: article.slug, title: article.title, dek: article.dek, date: article.date }];
+---
+<Layout lang={lang} title={`${ui.articlesTitle[lang]} · ${person.name}`} description={ui.articlesLead[lang]}>
+  <main id="main" class="inner">
+    <div class="wrap frame">
+      <a class="back" href={href(lang, '/')} data-path="/" set:html={t(person.shortName)} />
+      <header class="ai-head">
+        <h1 set:html={t(ui.articlesTitle)} />
+        <p set:html={t(ui.articlesLead)} />
+      </header>
+      <ul class="ai-list">
+        {items.map((a) => (
+          <li>
+            <a href={href(lang, `/articles/${a.slug}/`)}>
+              <span class="when" set:html={t(a.date)} />
+              <div>
+                <h2 set:html={t(a.title)} />
+                <p set:html={t(a.dek)} />
+              </div>
+              <span class="go" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <aside class="cta-band a-end">
+        <p set:html={t(ui.articleCta)} />
+        <a class="btn" href={`mailto:${person.email}`} set:html={t(ui.cta)} />
+      </aside>
+    </div>
+  </main>
+</Layout>

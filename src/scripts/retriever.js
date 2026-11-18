@@ -180,14 +180,11 @@
       render(input.value);
     });
   });
-  // Clicking a citation scrolls to the exact paragraph on the page and flags it.
+  // Clicking a citation shows the exact passage on the page (home.js opens the right tab
+  // or details first), scrolls to it and flags it.
   out.addEventListener('click', function (e) {
     var a = e.target.closest('a.cite'); if (!a) return;
-    var el = document.querySelector('[data-chunk="' + a.dataset.target + '"]');
-    if (!el) return;
-    e.preventDefault();
-    el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
-    el.classList.remove('flag'); void el.offsetWidth; el.classList.add('flag');
+    if (window.showChunk && window.showChunk(a.dataset.target)) e.preventDefault();
   });
   document.addEventListener('langchange', function () {
     input.placeholder = UI.demoPlaceholder[lang()];

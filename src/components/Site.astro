@@ -1,9 +1,10 @@
 ---
 import Layout from './Layout.astro';
-import { person, ui, path, services, dataFacets, experience, projects, stack, education, buildCorpus, itemText } from '../data/content';
+import { person, ui, facts, offer, caseTabs, migrooChain, others, path, education, experience, stack, buildCorpus, itemText } from '../data/content';
 import Replay from './Replay.astro';
 import { t, href } from '../lib/i18n';
 import retrieverCode from '../scripts/retriever.js?raw';
+import homeCode from '../scripts/home.js?raw';
 
 interface Props { lang: 'en' | 'fr' }
 const { lang } = Astro.props;
@@ -14,267 +15,336 @@ const data = JSON.stringify({ corpus: buildCorpus(), ui, api }).replace(/</g, '\
 const title = `${person.name} · ${person.role[lang]}`;
 const description = ui.heroLead[lang];
 const suggestions = ui.demoSuggestions.en.map((en, i) => ({ en, fr: ui.demoSuggestions.fr[i] }));
-const migrooChain = [{ en: 'Sources', fr: 'Sources' }, { en: 'Parsing', fr: 'Parsing' }, { en: 'Chunking', fr: 'Découpage' }, { en: 'Metadata', fr: 'Métadonnées' }, { en: 'Embeddings', fr: 'Embeddings' }, { en: 'Qdrant', fr: 'Qdrant' }, { en: 'Retrieval', fr: 'Retrieval' }, { en: 'LLM context', fr: 'Contexte LLM' }];
+const mail = `mailto:${person.email}`;
+const dashCauses: [{ en: string; fr: string }, number][] = [
+  [{ en: 'Invalid address', fr: 'Adresse invalide' }, 812],
+  [{ en: 'Mailbox full', fr: 'Boîte pleine' }, 534],
+  [{ en: 'Rejected by recipient server', fr: 'Rejet du serveur destinataire' }, 401],
+  [{ en: 'Send server timeout', fr: 'Délai du serveur d’envoi' }, 287],
+];
+const external = (url: string) => url.startsWith('http');
 ---
 <Layout lang={lang} title={title} description={description} home>
   <main id="top">
-    <section class="hero wrap">
-      <div class="hero-text">
-      <p class="who"><span set:html={t(person.role)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(ui.trainedAs)} /><span class="sep" aria-hidden="true">/</span><span set:html={t(person.location)} /></p>
-      <h1 set:html={t(ui.heroTitle)} />
-      <p class="lead" set:html={t(ui.heroLead)} />
-      <p class="ctas">
-        <a class="btn primary" href={`mailto:${person.email}`} set:html={t(ui.ctaContact)} />
-        <a class="btn" href="#projects" set:html={t(ui.ctaProjects)} />
-        <a class="plain" href={person.github} rel="noopener">GitHub</a>
-        <a class="plain" href={person.linkedin} rel="noopener">LinkedIn</a>
-      </p>
+    <!-- 01 · Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap frame">
+        <div class="hero-bar">
+          <span class="num" aria-hidden="true">01</span>
+          <span>{person.name}</span>
+          <span set:html={t(person.role)} />
+          <span class="avail"><i aria-hidden="true"></i><span set:html={t(ui.available)} /></span>
+        </div>
+        <div class="hero-grid">
+          <div class="hero-main">
+            <h1 id="hero-title"><span set:html={t(ui.heroTitle)} /><sup><a href="#ask" aria-label={ui.footnoteLabel[lang]}>[1]</a></sup></h1>
+            <p class="lead" set:html={t(ui.heroLead)} />
+            <p class="ctas">
+              <a class="btn" href={mail} set:html={t(ui.cta)} />
+              <a class="plain" href={person.github} rel="noopener">GitHub</a>
+              <a class="plain" href={person.linkedin} rel="noopener">LinkedIn</a>
+            </p>
+            <p class="fn"><span class="fn-n" aria-hidden="true">[1]</span> <a href="#ask"><span set:html={t(ui.footnote)} /> <span aria-hidden="true">↓</span></a></p>
+          </div>
+          <figure class="portrait">
+            <img src="/img/arona.webp" width="640" height="640" alt={ui.photoAlt[lang]} />
+            <figcaption><span set:html={t(person.location)} /><span>GMT</span></figcaption>
+          </figure>
+        </div>
+        <ul class="facts" aria-label={ui.factsLabel[lang]}>
+          {facts.map((f) => <li set:html={t(f)} />)}
+        </ul>
       </div>
-      <figure class="portrait">
-        <img src="/img/arona.webp" width="640" height="640" alt={ui.photoAlt[lang]} />
-      </figure>
     </section>
 
-    <section id="ask" class="ask" aria-labelledby="ask-title">
-      <div class="wrap">
-        <div class="ask-head">
+    <!-- 02 · Offer -->
+    <section id="offer" class="sec" aria-labelledby="offer-title">
+      <div class="wrap frame">
+        <header class="sec-head" data-reveal>
+          <span class="num" aria-hidden="true">02</span>
+          <h2 id="offer-title" set:html={t(ui.offerTitle)} />
+          <p set:html={t(ui.offerLead)} />
+        </header>
+        <div class="offer-grid" data-reveal>
+          {offer.map((o) => (
+            <div class="offer-col" data-chunk={o.id}>
+              <h3 set:html={t(o.title)} />
+              <ul>
+                {o.items.map((i) => (
+                  <li>
+                    <span set:html={t(i.text)} />
+                    {i.tab && <a class="to-case" href="#cases" data-tab={i.tab}><span set:html={t(ui.seeCase)} /></a>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · Demo -->
+    <section id="ask" class="sec" aria-labelledby="ask-title">
+      <div class="wrap frame">
+        <header class="sec-head" data-reveal>
+          <span class="num" aria-hidden="true">03</span>
           <h2 id="ask-title" set:html={t(ui.demoTitle)} />
           <p set:html={t(ui.demoLead)} />
-        </div>
-        <div class="console">
-          <form id="rag-form" role="search">
-            <input id="rag-q" name="q" type="search" autocomplete="off" aria-labelledby="ask-title" />
-            <button type="submit" set:html={t(ui.demoButton)} />
-          </form>
-          <div class="suggest">
-            <span class="try" set:html={t(ui.demoTry)} />
-            {suggestions.map((s) => <button type="button" data-suggest set:html={t(s)} />)}
+        </header>
+        <div class="console" data-reveal>
+          <div class="console-bar">
+            <span class="console-name">retriever.js</span>
+            <ol class="pipe" aria-hidden="true">
+              {ui.demoPipeline.map((p) => <li set:html={t(p)} />)}
+            </ol>
           </div>
-          <ol class="pipe" aria-hidden="true">
-            {ui.demoPipeline.map((p) => <li set:html={t(p)} />)}
-          </ol>
-          <p id="rag-stats" class="stats" aria-live="polite"></p>
-          <div id="rag-results" aria-live="polite"></div>
-          <p class="note" set:html={t(ui.demoNote)} />
+          <div class="console-body">
+            <form id="rag-form" role="search">
+              <label class="prompt" for="rag-q"><span aria-hidden="true">&gt;</span><span class="sr" set:html={t(ui.demoInputLabel)} /></label>
+              <input id="rag-q" name="q" type="search" autocomplete="off" enterkeyhint="search" />
+              <button type="submit" set:html={t(ui.demoButton)} />
+            </form>
+            <div class="suggest">
+              <span class="try" set:html={t(ui.demoTry)} />
+              {suggestions.map((s) => <button type="button" data-suggest set:html={t(s)} />)}
+            </div>
+            <p id="rag-stats" class="stats" aria-live="polite"></p>
+            <div id="rag-results" aria-live="polite"></div>
+            <p class="note" set:html={t(ui.demoNote)} />
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="services" class="wrap block" aria-labelledby="services-title">
-      <div class="sec-head">
-        <h2 id="services-title" set:html={t(ui.servicesTitle)} />
-        <p set:html={t(ui.servicesLead)} />
-      </div>
-      <ol class="services-grid">
-        {services.map((s) => (
-          <li>
-            <h3 set:html={t(s.title)} />
-            <p set:html={t(s.text)} />
-            <p class="proof" set:html={t(s.proof)} />
-          </li>
-        ))}
-      </ol>
-      <article class="km-card">
-        <div>
-          <p class="a-meta"><span set:html={t(ui.articleLabel)} /></p>
-          <h3 set:html={t(ui.kmTitle)} />
-          <p set:html={t(ui.kmText)} />
-          <p class="plinks">
-            <a href={href(lang, '/articles/knowledge-management-ai/')} data-path="/articles/knowledge-management-ai/" set:html={t(ui.readArticle)} />
-            <a href={href(lang, '/projects/migroo/')} data-path="/projects/migroo/">Migroo</a>
-            <a href={href(lang, '/projects/privasearch/')} data-path="/projects/privasearch/">PrivaSearch</a>
-          </p>
-        </div>
-        <ol class="km-flow" aria-hidden="true">
-          <li><span set:html={t({ en: 'Scattered documents', fr: 'Documents dispersés' })} /></li>
-          <li class="p"><strong>Migroo</strong><span set:html={t({ en: 'ingest · chunk · index', fr: 'ingérer · découper · indexer' })} /></li>
-          <li class="p"><strong>PrivaSearch</strong><span set:html={t({ en: 'search · on premise', fr: 'rechercher · on-premise' })} /></li>
-          <li class="end"><span set:html={t({ en: 'Sourced answers', fr: 'Réponses sourcées' })} /></li>
-        </ol>
-      </article>
-
-      <div class="services-demo">
-        <h3 set:html={t({ en: 'Email triage: n8n, a decision layer (TypeSafe Jev) and an LLM', fr: 'Tri d’e-mails : n8n, une couche de décision (TypeSafe Jev) et un LLM' })} />
-        <Replay demo="email" />
-      </div>
-    </section>
-
-    <section id="data" class="wrap block" aria-labelledby="data-title">
-      <div class="sec-head">
-        <h2 id="data-title" set:html={t(ui.dataTitle)} />
-        <p set:html={t(ui.dataLead)} />
-      </div>
-      <div class="data-grid">
-        <ul class="facets">
-          {dataFacets.map((f) => (
-            <li>
-              <h3 set:html={t(f.title)} />
-              <p set:html={t(f.text)} />
-              <p class="chips">{f.tags.map((tg) => <span class="tag">{tg}</span>)}</p>
-              {f.page && <p class="plinks"><a href={href(lang, `/projects/${f.page}/`)} data-path={`/projects/${f.page}/`} set:html={t({ en: 'See the study and demo', fr: 'Voir l’étude et la démo' })} /></p>}
-            </li>
+    <!-- 04 · Case studies -->
+    <section id="cases" class="sec" aria-labelledby="cases-title">
+      <div class="wrap frame">
+        <header class="sec-head" data-reveal>
+          <span class="num" aria-hidden="true">04</span>
+          <h2 id="cases-title" set:html={t(ui.casesTitle)} />
+          <p set:html={t(ui.casesLead)} />
+        </header>
+        <div class="tabs" role="tablist" aria-label={ui.casesTabs[lang]} data-tabs>
+          {caseTabs.map((tab, i) => (
+            <button type="button" role="tab" id={`tab-${tab.id}`} aria-controls={`panel-${tab.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+              <span set:html={t(tab.label)} /><span class="count">{String(tab.cases.length).padStart(2, '0')}</span>
+            </button>
           ))}
-        </ul>
-        <figure class="dash" aria-labelledby="dash-title">
-          <div class="dash-head">
-            <span id="dash-title" class="dash-title" set:html={t(ui.dashTitle)} />
-            <span class="rp-badge" set:html={t(ui.demoBadge)} />
+        </div>
+        {caseTabs.map((tab) => (
+          <div class="panel" role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} tabindex="0">
+            <h3 class="panel-title" set:html={t(tab.label)} />
+            {tab.cases.map((c) => (
+              <article class="case">
+                <div class="case-meta">
+                  <h4 set:html={t(c.title)} />
+                  <p class="sum" set:html={t(c.summary)} />
+                  <p class="chips">
+                    {c.delivered && <span class="status delivered" set:html={t(ui.status.delivered)} />}
+                    {c.status && <span class={`status ${c.status}`} set:html={t(ui.status[c.status])} />}
+                  </p>
+                  {(c.page || c.links) && (
+                    <p class="plinks">
+                      {c.page && <a href={href(lang, `/projects/${c.page}/`)} set:html={t(ui.howItWorks)} />}
+                      {(c.links ?? []).map((l) => <a href={l.url} target={external(l.url) ? '_blank' : undefined} rel="noopener" set:html={t(l.label)} />)}
+                    </p>
+                  )}
+                </div>
+                <dl class="case-body">
+                  <div>
+                    <dt set:html={t(ui.problem)} />
+                    <dd><p set:html={t(c.problem)} /></dd>
+                  </div>
+                  <div>
+                    <dt set:html={t(ui.built)} />
+                    <dd>
+                      {c.extra === 'chain' && (
+                        <ol class="chain" aria-label="Migroo pipeline">
+                          {migrooChain.map((s) => <li set:html={t(s)} />)}
+                        </ol>
+                      )}
+                      {c.built.map((b, i) => <p data-chunk={c.indexed === false ? undefined : `${c.id}#${i + 1}`} set:html={t(b.text)} />)}
+                      {c.extra === 'email' && <Replay demo="email" />}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt set:html={t(ui.result)} />
+                    <dd>
+                      {c.result.map((b, i) => <p data-chunk={c.indexed === false ? undefined : `${c.id}#${c.built.length + i + 1}`} set:html={t(b.text)} />)}
+                      {c.extra === 'dash' && (
+                        <figure class="dash" aria-labelledby="dash-title">
+                          <div class="dash-head">
+                            <span id="dash-title" class="dash-title" set:html={t(ui.dashTitle)} />
+                            <span class="status demo" set:html={t(ui.demoBadge)} />
+                          </div>
+                          <ul class="kpis">
+                            <li><span class="k-val" set:html={t({ en: '48,210', fr: '48 210' })} /><span class="k-lab" set:html={t({ en: 'invoices sent', fr: 'factures envoyées' })} /></li>
+                            <li><span class="k-val" set:html={t({ en: '95.8%', fr: '95,8 %' })} /><span class="k-lab" set:html={t({ en: 'delivered', fr: 'remises' })} /></li>
+                            <li><span class="k-val" set:html={t({ en: '2,034', fr: '2 034' })} /><span class="k-lab" set:html={t({ en: 'failed sends', fr: 'échecs d’envoi' })} /></li>
+                          </ul>
+                          <ul class="causes">
+                            {dashCauses.map(([lab, n]) => (
+                              <li>
+                                <span class="c-lab" set:html={t(lab)} />
+                                <span class="c-bar"><span style={`width:${(100 * n) / 812}%`}></span></span>
+                                <span class="c-val">{n}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <figcaption set:html={t(ui.dashNote)} />
+                        </figure>
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt set:html={t(ui.stackLabel)} />
+                    <dd class="chips">{c.tags.map((tg) => <span class="tag">{tg}</span>)}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+            {tab.article && (
+              <aside class="case-article">
+                <span class="status" set:html={t(ui.articleLabel)} />
+                <div>
+                  <p class="ca-title"><a href={href(lang, '/articles/knowledge-management-ai/')} set:html={t(ui.kmTitle)} /></p>
+                  <p set:html={t(ui.kmText)} />
+                </div>
+              </aside>
+            )}
           </div>
-          <div class="kpis">
-            <div><span class="k-val" set:html={t({ en: '48,210', fr: '48 210' })} /><span class="k-lab" set:html={t({ en: 'invoices sent', fr: 'factures envoyées' })} /></div>
-            <div><span class="k-val" set:html={t({ en: '95.8%', fr: '95,8 %' })} /><span class="k-lab" set:html={t({ en: 'delivered', fr: 'remises' })} /></div>
-            <div><span class="k-val warn" set:html={t({ en: '2,034', fr: '2 034' })} /><span class="k-lab" set:html={t({ en: 'failed sends', fr: 'échecs d’envoi' })} /></div>
-          </div>
-          <p class="dash-sub" set:html={t({ en: 'Failure causes', fr: 'Causes des échecs' })} />
-          <ul class="causes">
-            {[
-              [{ en: 'Invalid address', fr: 'Adresse invalide' }, 812],
-              [{ en: 'Mailbox full', fr: 'Boîte pleine' }, 534],
-              [{ en: 'Rejected by recipient server', fr: 'Rejet du serveur destinataire' }, 401],
-              [{ en: 'Send server timeout', fr: 'Délai du serveur d’envoi' }, 287],
-            ].map(([lab, n]) => (
+        ))}
+        <div class="others">
+          <h3 set:html={t(ui.othersTitle)} />
+          <ul>
+            {others.map((o) => (
               <li>
-                <span class="c-lab" set:html={t(lab as any)} />
-                <span class="c-bar"><span style={`width:${(100 * (n as number)) / 812}%`}></span></span>
-                <span class="c-val">{n}</span>
+                <strong>{o.title}</strong>
+                <span set:html={t(o.summary)} />
+                <span class={`status ${o.status}`} set:html={t(ui.status[o.status])} />
+                {o.link && <a href={o.link.url} target="_blank" rel="noopener" set:html={t(o.link.label)} />}
               </li>
             ))}
           </ul>
-          <figcaption set:html={t(ui.dashNote)} />
-        </figure>
+        </div>
+        <div class="cta-band" data-reveal>
+          <p set:html={t(ui.ctaBand)} />
+          <a class="btn" href={mail} set:html={t(ui.cta)} />
+        </div>
       </div>
     </section>
 
-    <section id="path" class="wrap block" aria-labelledby="path-title">
-      <div class="sec-head">
-        <h2 id="path-title" set:html={t(ui.pathTitle)} />
-        <p set:html={t(ui.pathLead)} />
+    <!-- 05 · Path -->
+    <section id="path" class="sec" aria-labelledby="path-title">
+      <div class="wrap frame">
+        <header class="sec-head" data-reveal>
+          <span class="num" aria-hidden="true">05</span>
+          <h2 id="path-title" set:html={t(ui.pathTitle)} />
+          <p set:html={t(ui.pathLead)} />
+        </header>
+        <ol class="path">
+          {path.map((p) => {
+            const role = p.role ? experience.find((e) => e.id === p.role)! : null;
+            return (
+              <li class={p.now ? 'now' : undefined}>
+                <span class="when" set:html={t(p.when as any)} />
+                <div class="path-what">
+                  <h3 set:html={t(p.title)} />
+                  {p.org && <p class="org" set:html={t(p.org)} />}
+                </div>
+                <div class="path-detail">
+                  <p set:html={t(p.text)} />
+                  {p.education && (
+                    <ul class="edu">
+                      {education.map((e, i) => (
+                        <li data-chunk={`edu#${i + 1}`}>
+                          <strong set:html={t(e.title)} />
+                          <span set:html={t(e.org)} />
+                          {e.link && <a href={e.link} rel="noopener" set:html={t(ui.verify)} />}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {role && (
+                    <details>
+                      <summary><span set:html={t(ui.roleDetail)} /><span class="role-title" set:html={t(role.title)} /></summary>
+                      <ul class="paras">
+                        {role.bullets.map((b, i) => <li data-chunk={`${role.id}#${i + 1}`}><span set:html={t(b.text)} /></li>)}
+                      </ul>
+                    </details>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </div>
-      <ol class="path">
-        {path.map((p) => (
-          <li>
-            <span class="when" set:html={t(p.when as any)} />
-            <h3 set:html={t(p.title)} />
-            <p set:html={t(p.text)} />
-          </li>
-        ))}
-      </ol>
     </section>
 
-    <section id="work" class="wrap block" aria-labelledby="work-title">
-      <div class="sec-head"><h2 id="work-title" set:html={t(ui.workTitle)} /></div>
-      {experience.map((it) => (
-        <article class="role">
-          <div class="role-meta">
-            <h3 set:html={t(it.title)} />
-            <p class="org" set:html={t(it.org!)} />
-            <p class="when">{it.when}</p>
+    <!-- 06 · Stack -->
+    <section id="stack" class="sec" aria-labelledby="stack-title">
+      <div class="wrap frame">
+        <header class="sec-head" data-reveal>
+          <span class="num" aria-hidden="true">06</span>
+          <h2 id="stack-title" set:html={t(ui.stackTitle)} />
+          <p set:html={t(ui.stackLead)} />
+        </header>
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee-track">
+            {[0, 1].map(() => <ul>{stack.mastered.map((s) => <li>{itemText(s, lang)}</li>)}</ul>)}
           </div>
-          <ol class="paras">
-            {it.bullets.map((b, i) => (
-              <li data-chunk={`${it.id}#${i + 1}`}><span set:html={t(b.text)} /></li>
-            ))}
-          </ol>
-        </article>
-      ))}
-    </section>
-
-    <section id="projects" class="wrap block" aria-labelledby="projects-title">
-      <div class="sec-head">
-        <h2 id="projects-title" set:html={t(ui.projectsTitle)} />
-        <p set:html={t(ui.projectsLead)} />
-      </div>
-      {projects.map((it, idx) => (
-        <article class={idx === 0 ? 'proj feature' : 'proj'}>
-          <div class="proj-meta">
-            <h3 set:html={t(it.title)} />
-            <p class="sum" set:html={t(it.summary!)} />
-            <p class="chips">
-              {it.delivered && <span class="status delivered" set:html={t(ui.status.delivered)} />}
-              {it.status && <span class={`status ${it.status}`} set:html={t(ui.status[it.status])} />}
-              {(it.tags ?? []).map((tg) => <span class="tag">{tg}</span>)}
-            </p>
-            {(it.page || it.links) && (
-              <p class="plinks">
-                {it.page && <a href={href(lang, `/projects/${it.page}/`)} data-path={`/projects/${it.page}/`} set:html={t(ui.howItWorks)} />}
-                {(it.links ?? []).map((l) => <a href={l.url} target="_blank" rel="noopener" set:html={t(l.label)} />)}
-              </p>
-            )}
+        </div>
+        <div class="stack-grid">
+          <div class="stack-col">
+            <h3 set:html={t(ui.mastered)} />
+            <ul class="skills" data-chunk="stack#1">
+              {stack.mastered.map((s) => <li>{itemText(s, lang)}</li>)}
+            </ul>
+            <h3 class="sub" set:html={t(ui.dataBi)} />
+            <ul class="skills" data-chunk="stack#2">
+              {stack.dataBi.map((s) => <li>{itemText(s, lang)}</li>)}
+            </ul>
           </div>
-          <div class="proj-body">
-            {idx === 0 && (
-              <ol class="chain" aria-label="Migroo pipeline">
-                {migrooChain.map((s) => <li set:html={t(s)} />)}
-              </ol>
-            )}
-            <ol class="paras">
-              {it.bullets.map((b, i) => (
-                <li data-chunk={`${it.id}#${i + 1}`}><span set:html={t(b.text)} /></li>
+          <div class="stack-col">
+            <h3><span set:html={t(ui.learning)} /><span class="as-of" set:html={t(stack.asOf)} /></h3>
+            <ul class="learning">
+              {stack.learning.map((s, i) => (
+                <li data-chunk={`learning#${i + 1}`}>
+                  <strong set:html={t(s.name)} />
+                  <p set:html={t(s.state)} />
+                  {s.link && <a href={s.link.internal ? href(lang, s.link.url) : s.link.url} target={s.link.internal ? undefined : '_blank'} rel="noopener" set:html={t(s.link.label)} />}
+                </li>
               ))}
-            </ol>
+            </ul>
           </div>
-        </article>
-      ))}
-    </section>
-
-    <section id="stack" class="wrap block two" aria-labelledby="stack-title">
-      <div>
-        <div class="sec-head"><h2 id="stack-title" set:html={t(ui.stackTitle)} /></div>
-        <dl class="stack">
-          {stack.map((s, i) => (
-            <div data-chunk={`stack#${i + 1}`}>
-              <dt set:html={t(s.group)} />
-              <dd>
-                {s.items.map((i) => itemText(i, lang)).join(' · ')}
-                {s.note && <small set:html={t(s.note)} />}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-      <div>
-        <div class="sec-head"><h2 set:html={t(ui.eduTitle)} /></div>
-        <ul class="edu">
-          {education.map((e, i) => (
-            <li data-chunk={`edu#${i + 1}`}>
-              <strong set:html={t(e.title)} />
-              <span set:html={t(e.org)} />
-              {(e as any).note && <small set:html={t((e as any).note)} />}
-              {e.link && <a href={e.link} rel="noopener" set:html={t(ui.verify)} />}
-            </li>
-          ))}
-          <li data-chunk="profile#1"><strong set:html={t({ en: 'Languages', fr: 'Langues' })} /><span set:html={t(ui.languages)} /></li>
-        </ul>
+        </div>
       </div>
     </section>
 
-    <section id="passion" class="wrap block passion" aria-labelledby="passion-title">
-      <div class="passion-text">
-        <div class="sec-head"><h2 id="passion-title" set:html={t(ui.passionTitle)} /></div>
-        <p set:html={t(ui.passionText)} />
-        <a href={person.linkedin} rel="noopener" set:html={t(ui.passionLink)} />
-      </div>
-      <figure class="legends">
-        <img src="/img/legends.webp" width="768" height="512" loading="lazy" alt={ui.passionAlt[lang]} />
-        <figcaption set:html={t(ui.passionCaption)} />
-      </figure>
-    </section>
-
-    <section id="contact" class="contact" aria-labelledby="contact-title">
-      <div class="wrap">
-        <h2 id="contact-title" set:html={t(ui.contactTitle)} />
-        <p set:html={t(ui.contactLead)} />
-        <a class="mail" href={`mailto:${person.email}`}>{person.email}</a>
-        <p class="links">
-          <a href={person.linkedin} rel="noopener">LinkedIn</a>
-          <a href={person.github} rel="noopener">GitHub</a>
-          <span set:html={t(person.location)} />
-        </p>
+    <!-- 07 · Contact -->
+    <section id="contact" class="sec contact" aria-labelledby="contact-title">
+      <div class="wrap frame">
+        <div class="contact-grid">
+          <div class="contact-main" data-reveal>
+            <span class="num" aria-hidden="true">07</span>
+            <h2 id="contact-title" set:html={t(ui.contactTitle)} />
+            <p data-chunk="profile#1" set:html={t(ui.contactLead)} />
+            <a class="btn" href={mail} set:html={t(ui.cta)} />
+          </div>
+          <dl class="contact-list">
+            <div><dt set:html={t(ui.emailLabel)} /><dd><a href={mail}>{person.email}</a></dd></div>
+            <div><dt>LinkedIn</dt><dd><a href={person.linkedin} rel="noopener">linkedin.com/in/arona-diatta-b76541140</a></dd></div>
+            <div><dt>GitHub</dt><dd><a href={person.github} rel="noopener">github.com/rooniweb</a></dd></div>
+            <div><dt set:html={t(ui.languagesLabel)} /><dd set:html={t(ui.languages)} /></div>
+            <div><dt set:html={t(ui.timezoneLabel)} /><dd set:html={t(ui.timezone)} /></div>
+          </dl>
+        </div>
       </div>
     </section>
   </main>
   <Fragment slot="scripts">
     <script type="application/json" id="rag-data" set:html={data}></script>
+    <script is:inline set:html={homeCode}></script>
     <script is:inline set:html={retrieverCode}></script>
   </Fragment>
 </Layout>

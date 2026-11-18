@@ -9,7 +9,7 @@ export type Scenario = { label: L; steps: Step[] };
 export const kindLabel: Record<StepKind, L> = {
   input: { en: 'Input', fr: 'Entrée' },
   trigger: { en: 'Trigger', fr: 'Déclencheur' },
-  think: { en: 'Reasoning', fr: 'Raisonnement' },
+  think: { en: 'Agent decision', fr: 'Décision de l’agent' },
   parse: { en: 'Reading · native text or OCR', fr: 'Lecture · texte natif ou OCR' },
   classify: { en: 'Classification', fr: 'Classification' },
   verify: { en: 'Verification · rules', fr: 'Vérification · règles' },
