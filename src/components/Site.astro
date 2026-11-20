@@ -39,6 +39,9 @@ const external = (url: string) => url.startsWith('http');
           <div class="hero-main">
             <h1 id="hero-title"><span set:html={t(ui.heroTitle)} /><sup><a href="#ask" aria-label={ui.footnoteLabel[lang]}>[1]</a></sup></h1>
             <p class="lead" set:html={t(ui.heroLead)} />
+            <ul class="domains" aria-label={ui.domainsLabel[lang]}>
+              {ui.domains[lang].map((d) => <li>{d}</li>)}
+            </ul>
             <p class="ctas">
               <a class="btn" href={mail} set:html={t(ui.cta)} />
               <a class="plain" href={person.github} rel="noopener">GitHub</a>
@@ -291,30 +294,22 @@ const external = (url: string) => url.startsWith('http');
         </header>
         <div class="marquee" aria-hidden="true">
           <div class="marquee-track">
-            {[0, 1].map(() => <ul>{stack.mastered.map((s) => <li>{itemText(s, lang)}</li>)}</ul>)}
+            {[0, 1].map(() => <ul>{stack.groups.flatMap((g) => g.items).map((s) => <li>{itemText(s, lang)}</li>)}</ul>)}
           </div>
         </div>
-        <div class="stack-grid">
-          <div class="stack-col">
-            <h3 set:html={t(ui.mastered)} />
-            <ul class="skills" data-chunk="stack#1">
-              {stack.mastered.map((s) => <li>{itemText(s, lang)}</li>)}
-            </ul>
-            <h3 class="sub" set:html={t(ui.dataBi)} />
-            <ul class="skills" data-chunk="stack#2">
-              {stack.dataBi.map((s) => <li>{itemText(s, lang)}</li>)}
-            </ul>
-          </div>
-          <div class="stack-col">
-            <h3><span set:html={t(ui.learning)} /><span class="as-of" set:html={t(stack.asOf)} /></h3>
-            <ul class="learning">
-              {stack.learning.map((s, i) => (
-                <li data-chunk={`learning#${i + 1}`}>
-                  <strong set:html={t(s.name)} />
-                  <p set:html={t(s.state)} />
-                  {s.link && <a href={s.link.internal ? href(lang, s.link.url) : s.link.url} target={s.link.internal ? undefined : '_blank'} rel="noopener" set:html={t(s.link.label)} />}
-                </li>
-              ))}
+        <div class="stack-grid domains-grid">
+          {stack.groups.map((g) => (
+            <div class="stack-col">
+              <h3 set:html={t(g.title)} />
+              <ul class="skills" data-chunk={`stack#${g.id}`}>
+                {g.items.map((s) => <li>{itemText(s, lang)}</li>)}
+              </ul>
+            </div>
+          ))}
+          <div class="stack-col trends">
+            <h3 set:html={t(ui.trendsTitle)} />
+            <ul class="skills" data-chunk="stack#trends">
+              {stack.trends.map((s) => <li>{itemText(s, lang)}</li>)}
             </ul>
           </div>
         </div>

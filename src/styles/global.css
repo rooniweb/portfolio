@@ -214,7 +214,7 @@ html { scrollbar-color: var(--line-2) var(--bg); scrollbar-width: thin; }
 
 /* Hero entrance, once on load. */
 @media (prefers-reduced-motion: no-preference) {
-  .js .hero h1, .js .hero .lead, .js .hero .ctas, .js .hero .fn, .js .portrait, .js .facts li { animation: enter 0.9s var(--ease-out) both; }
+  .js .hero h1, .js .hero .lead, .js .hero .domains, .js .hero .ctas, .js .hero .fn, .js .portrait, .js .facts li { animation: enter 0.9s var(--ease-out) both; }
   .js .hero .lead { animation-delay: 0.08s; }
   .js .hero .ctas { animation-delay: 0.16s; }
   .js .hero .fn { animation-delay: 0.22s; }
@@ -462,7 +462,14 @@ details pre { white-space: pre-wrap; font: 400 12.5px/1.6 var(--mono); color: va
 .learning strong::before { content: ''; width: 6px; height: 6px; border-radius: 50%; border: 1px dashed var(--accent); }
 .learning p { margin: 0; color: var(--muted); font-size: 14.5px; }
 .learning a { font: 500 11.5px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px; width: fit-content; }
-@media (max-width: 860px) { .stack-grid { grid-template-columns: 1fr; } .stack-col + .stack-col { border-left: 0; border-top: 1px solid var(--line); } }
+.domains-grid .stack-col + .stack-col { border-left: 0; }
+.domains-grid .stack-col:nth-child(even) { border-left: 1px solid var(--line); }
+.domains-grid .stack-col:nth-child(n + 3) { border-top: 1px solid var(--line); }
+.domains-grid .trends { grid-column: 1 / -1; border-left: 0 !important; }
+.domains { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0; font: 600 13px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); }
+.domains li { display: flex; align-items: center; }
+.domains li + li::before { content: '·'; margin: 0 14px; color: var(--line-2); }
+@media (max-width: 860px) { .stack-grid { grid-template-columns: 1fr; } .stack-col + .stack-col, .domains-grid .stack-col:nth-child(even) { border-left: 0; border-top: 1px solid var(--line); } }
 
 /* ---------- 07 · Contact ---------- */
 .contact-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px clamp(32px, 6vw, 96px); align-items: end; }

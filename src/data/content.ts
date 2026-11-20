@@ -39,9 +39,11 @@ export const ui = {
     fr: 'Des systèmes RAG qui citent leurs sources.',
   },
   heroLead: {
-    en: 'Freelance AI engineer: RAG, agents and data pipelines for business. Data scientist by training, data engineer by trade. Based in Dakar, on Paris and London time (GMT).',
-    fr: 'Ingénieur IA freelance : RAG, agents et pipelines de données pour l’entreprise. Data scientist de formation, data engineer de métier. Basé à Dakar, à l’heure de Paris et Londres (GMT).',
+    en: 'Freelance AI engineer, RAG and agents specialist: I design RAG systems, AI agents and the data pipelines that feed them, from prototype to production. Data scientist by training, future AI architect. Based in Dakar, on Paris and London time (GMT).',
+    fr: 'Ingénieur IA freelance, expert RAG et agents : je conçois des systèmes RAG, des agents IA et les pipelines de données qui les alimentent, du prototype à la production. Data scientist de formation, architecte IA en devenir. Basé à Dakar, à l’heure de Paris et Londres (GMT).',
   },
+  domains: { en: ['Data', 'AI', 'DevOps', 'Cloud'], fr: ['Data', 'IA', 'DevOps', 'Cloud'] },
+  domainsLabel: { en: 'Areas of expertise', fr: 'Domaines d’expertise' },
   available: { en: 'Available for remote missions', fr: 'Disponible pour des missions en remote' },
   cta: { en: 'Let’s talk about your project', fr: 'Discutons de votre projet' },
   footnote: {
@@ -138,12 +140,10 @@ export const ui = {
   // 06 · Stack
   stackTitle: { en: 'Stack', fr: 'Stack' },
   stackLead: {
-    en: 'Two levels, and no long list. A skill moves from “in progress” to “mastered” as soon as a published project proves it.',
-    fr: 'Deux niveaux, sans liste à rallonge. Une compétence passe de « en cours » à « maîtrisé » dès qu’un projet publié la prouve.',
+    en: 'Organised by area, along the chain I deliver: reliable data, AI and GenAI on top of it, then automated deployment to the cloud.',
+    fr: 'Organisée par domaine, dans l’ordre de la chaîne que je livre : des données fiables, l’IA et la GenAI par-dessus, puis le déploiement automatisé dans le cloud.',
   },
-  mastered: { en: 'Mastered', fr: 'Maîtrisé' },
-  learning: { en: 'In progress', fr: 'En cours d’acquisition' },
-  dataBi: { en: 'Data & BI', fr: 'Data & BI' },
+  trendsTitle: { en: 'Trends I follow', fr: 'Tendances que je suis' },
 
   // 07 · Contact
   contactTitle: { en: 'Let’s talk about your project.', fr: 'Discutons de votre projet.' },
@@ -767,47 +767,62 @@ export const path: { when: L | string; title: L; org?: L; text: L; role?: string
 export type Item2 = string | L;
 export const itemText = (i: Item2, lang: 'en' | 'fr') => (typeof i === 'string' ? i : i[lang]);
 
-export const stack = {
-  mastered: [
-    'Python', 'FastAPI', 'LangChain', 'LangGraph', 'MCP / FastMCP', 'Qdrant', 'ChromaDB',
-    { en: 'Hybrid search (BM25 + RRF)', fr: 'Recherche hybride (BM25 + RRF)' },
-    'Ollama', 'OpenAI', 'Docling', 'n8n', 'Phoenix', 'SQL (Oracle, MySQL)', 'Talend', 'pandas',
-  ] as Item2[],
-  dataBi: ['Power BI', 'Tableau', 'LightGBM'] as Item2[],
-  // Skills being acquired. Move one to `mastered` only once a published project proves it.
-  asOf: { en: 'Status in November 2026', fr: 'État en novembre 2026' } as L,
-  learning: [
+export type StackGroup = { id: string; title: L; items: Item2[]; keywords: string };
+export const stack: { groups: StackGroup[]; trends: Item2[] } = {
+  groups: [
     {
-      name: { en: 'Docker & CI/CD', fr: 'Docker & CI/CD' },
-      state: {
-        en: 'A first GitHub Actions workflow runs on this site’s repository. Dockerfile and CI are written for DocuCheck, not yet run.',
-        fr: 'Un premier workflow GitHub Actions tourne sur le dépôt de ce site. Dockerfile et CI sont écrits pour DocuCheck, pas encore exécutés.',
-      },
-      link: { label: { en: 'Workflow runs of this site', fr: 'Exécutions du workflow de ce site' }, url: 'https://github.com/rooniweb/portfolio/actions' },
+      id: 'data',
+      title: { en: 'Data', fr: 'Data' },
+      items: [
+        'Python', 'SQL', 'Oracle', 'MySQL', 'PostgreSQL', 'pandas',
+        { en: 'ETL pipelines (Talend)', fr: 'Pipelines ETL (Talend)' },
+        { en: 'Large-scale data migration', fr: 'Migration de données à grande échelle' },
+        { en: 'Data quality & reconciliation', fr: 'Qualité et réconciliation des données' },
+        'Airflow', 'Snowflake', 'Power BI', 'Tableau', 'LightGBM',
+      ],
+      keywords: 'data engineering etl sql database migration quality bi machine learning',
     },
     {
-      name: { en: 'LLM evaluation', fr: 'Évaluation LLM' },
-      state: {
-        en: 'Evaluation on execution results is in place on Sogolon (30 reference questions). For RAG, a reference question set and an LLM-as-a-judge come next.',
-        fr: 'Une évaluation sur résultats d’exécution est en place sur Sogolon (30 questions de référence). Pour le RAG, un jeu de questions de référence et un LLM-as-a-judge sont le chantier suivant.',
-      },
-      link: { label: { en: 'Sogolon, how it is evaluated', fr: 'Sogolon, comment elle est évaluée' }, url: '/projects/sogolon/', internal: true },
+      id: 'ai',
+      title: { en: 'AI & GenAI', fr: 'IA & GenAI' },
+      items: [
+        { en: 'RAG (hybrid search BM25 + RRF)', fr: 'RAG (recherche hybride BM25 + RRF)' },
+        { en: 'AI agents (ReAct, LangGraph)', fr: 'Agents IA (ReAct, LangGraph)' },
+        'AI agent harness', 'MCP / FastMCP', 'LangChain', 'CrewAI', 'OpenAI', 'Ollama',
+        { en: 'Embeddings, Qdrant, ChromaDB', fr: 'Embeddings, Qdrant, ChromaDB' },
+        'Docling', 'NL-to-SQL',
+        { en: 'LLM evaluation', fr: 'Évaluation LLM' },
+        { en: 'LLM guardrails', fr: 'Garde-fous LLM' },
+        { en: 'Tracing (Phoenix)', fr: 'Traçabilité (Phoenix)' },
+        'FastAPI', 'n8n',
+      ],
+      keywords: 'ai genai llm rag agents retrieval embeddings vector mcp langgraph evaluation',
     },
     {
-      name: { en: 'PostgreSQL / pgvector', fr: 'PostgreSQL / pgvector' },
-      state: {
-        en: 'Planned on Migroo. Nothing published yet.',
-        fr: 'Prévu sur Migroo. Rien de publié pour l’instant.',
-      },
+      id: 'devops',
+      title: { en: 'DevOps', fr: 'DevOps' },
+      items: ['Git', 'GitHub Actions', 'GitLab CI', 'CI/CD', 'Docker', 'Kubernetes', 'Terraform', 'pytest'],
+      keywords: 'devops ci cd pipeline docker kubernetes terraform infrastructure as code tests llmops',
     },
     {
-      name: { en: 'Cloud deployment', fr: 'Déploiement cloud' },
-      state: {
-        en: 'Planned: putting a demo online. Nothing published yet.',
-        fr: 'Prévu : la mise en ligne d’une démo. Rien de publié pour l’instant.',
-      },
+      id: 'cloud',
+      title: { en: 'Cloud', fr: 'Cloud' },
+      items: [
+        { en: 'Google Cloud (GKE, Artifact Registry)', fr: 'Google Cloud (GKE, Artifact Registry)' },
+        'AWS', 'Vercel',
+        { en: 'Managed PostgreSQL (Neon)', fr: 'PostgreSQL managé (Neon)' },
+      ],
+      keywords: 'cloud gcp google aws vercel deployment managed database',
     },
-  ] as { name: L; state: L; link?: { label: L; url: string; internal?: boolean } }[],
+  ],
+  // Followed closely, not presented as delivered work.
+  trends: [
+    { en: 'Agentic AI', fr: 'IA agentique' },
+    { en: 'LLM fine-tuning (LoRA)', fr: 'Fine-tuning de LLM (LoRA)' },
+    'LLMOps',
+    { en: 'Agentic RAG', fr: 'RAG agentique' },
+    { en: 'Context engineering', fr: 'Ingénierie du contexte' },
+  ],
 };
 
 // ---------- Retrieval corpus ----------
@@ -884,21 +899,12 @@ export function buildCorpus(): Chunk[] {
     });
   });
 
-  const mastered = { en: `${ui.mastered.en}: ${list(stack.mastered, 'en')}.`, fr: `${ui.mastered.fr} : ${list(stack.mastered, 'fr')}.` };
-  out.push({ id: 'stack#1', path: { en: `Stack › ${ui.mastered.en}`, fr: `Stack › ${ui.mastered.fr}` }, anchor: 'stack', text: mastered, parent: mastered, keywords: list(stack.mastered, 'en') });
-  const bi = { en: `${ui.dataBi.en}: ${list(stack.dataBi, 'en')}.`, fr: `${ui.dataBi.fr} : ${list(stack.dataBi, 'fr')}.` };
-  out.push({ id: 'stack#2', path: { en: `Stack › ${ui.dataBi.en}`, fr: `Stack › ${ui.dataBi.fr}` }, anchor: 'stack', text: bi, parent: bi, keywords: 'bi business intelligence dashboard reporting machine learning ' + list(stack.dataBi, 'en') });
-  stack.learning.forEach((s, i) => {
-    const text = { en: `${ui.learning.en}: ${s.name.en}. ${s.state.en}`, fr: `${ui.learning.fr} : ${s.name.fr}. ${s.state.fr}` };
-    out.push({
-      id: `learning#${i + 1}`,
-      path: { en: `Stack › ${ui.learning.en} › ${s.name.en}`, fr: `Stack › ${ui.learning.fr} › ${s.name.fr}` },
-      anchor: 'stack',
-      text,
-      parent: text,
-      keywords: 'learning in progress roadmap ' + s.name.en,
-    });
+  stack.groups.forEach((g) => {
+    const text = { en: `${g.title.en}: ${list(g.items, 'en')}.`, fr: `${g.title.fr} : ${list(g.items, 'fr')}.` };
+    out.push({ id: `stack#${g.id}`, path: { en: `Stack › ${g.title.en}`, fr: `Stack › ${g.title.fr}` }, anchor: 'stack', text, parent: text, keywords: g.keywords + ' ' + list(g.items, 'en') });
   });
+  const trends = { en: `${ui.trendsTitle.en}: ${list(stack.trends, 'en')}.`, fr: `${ui.trendsTitle.fr} : ${list(stack.trends, 'fr')}.` };
+  out.push({ id: 'stack#trends', path: { en: `Stack › ${ui.trendsTitle.en}`, fr: `Stack › ${ui.trendsTitle.fr}` }, anchor: 'stack', text: trends, parent: trends, keywords: 'trends watch agentic fine-tuning llmops ' + list(stack.trends, 'en') });
 
   const profile = {
     en: `Freelance AI engineer based in Dakar, Senegal, available for remote missions. Time zone: GMT. Languages: ${ui.languages.en}.`,
