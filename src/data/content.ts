@@ -774,11 +774,11 @@ export const stack: { groups: StackGroup[]; trends: Item2[] } = {
       id: 'data',
       title: { en: 'Data', fr: 'Data' },
       items: [
-        'Python', 'SQL', 'Apache Spark (PySpark)', 'Apache Airflow', 'Snowflake',
+        'Python', 'SQL', 'Apache Spark (PySpark)', 'Apache Airflow', 'dbt', 'Apache Kafka', 'Snowflake',
         { en: 'Google Cloud (BigQuery)', fr: 'Google Cloud (BigQuery)' },
         'Talend Open Studio', 'PostgreSQL', 'Oracle', 'MySQL', 'pandas', 'Power BI', 'Tableau',
       ],
-      keywords: 'data engineering etl elt spark pyspark airflow orchestration snowflake bigquery gcp warehouse sql database talend bi power bi tableau',
+      keywords: 'data engineering etl elt spark pyspark airflow dbt kafka streaming orchestration snowflake bigquery gcp warehouse sql database talend bi power bi tableau',
     },
     {
       id: 'ai',
