@@ -849,6 +849,7 @@ export const stack: { groups: StackGroup[]; trends: Item2[] } = {
     { en: 'Agentic AI', fr: 'IA agentique' },
     { en: 'Agentic RAG', fr: 'RAG agentique' },
     { en: 'Context engineering', fr: 'Ingénierie du contexte' },
+    { en: 'Enterprise ontology (NVIDIA Auto-Ontology)', fr: 'Ontologie d’entreprise (NVIDIA Auto-Ontology)' },
   ],
 };
 
