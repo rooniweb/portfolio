@@ -465,7 +465,6 @@ details pre { white-space: pre-wrap; font: 400 12.5px/1.6 var(--mono); color: va
 .domains-grid .stack-col + .stack-col { border-left: 0; }
 .domains-grid .stack-col:nth-child(even) { border-left: 1px solid var(--line); }
 .domains-grid .stack-col:nth-child(n + 3) { border-top: 1px solid var(--line); }
-.domains-grid .trends { grid-column: 1 / -1; border-left: 0 !important; }
 .domains { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0; font: 600 13px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); }
 .domains li { display: flex; align-items: center; }
 .domains li + li::before { content: '·'; margin: 0 14px; color: var(--line-2); }

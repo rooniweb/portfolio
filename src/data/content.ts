@@ -140,8 +140,8 @@ export const ui = {
   // 06 · Stack
   stackTitle: { en: 'Stack', fr: 'Stack' },
   stackLead: {
-    en: 'Organised by area, along the chain I deliver: reliable data, AI and GenAI on top of it, then automated deployment to the cloud.',
-    fr: 'Organisée par domaine, dans l’ordre de la chaîne que je livre : des données fiables, l’IA et la GenAI par-dessus, puis le déploiement automatisé dans le cloud.',
+    en: 'Organised by area, along the chain I deliver: reliable data, GenAI and agents on top of it, models served, adapted and measured, then automated deployment to the cloud.',
+    fr: 'Organisée par domaine, dans l’ordre de la chaîne que je livre : des données fiables, l’IA générative et les agents par-dessus, des modèles servis, adaptés et mesurés, puis le déploiement automatisé dans le cloud.',
   },
   trendsTitle: { en: 'Trends I follow', fr: 'Tendances que je suis' },
 
@@ -682,14 +682,14 @@ export const others: { id: string; title: string; summary: L; status: keyof type
   {
     id: 'revizia',
     title: 'RéviZIA',
-    summary: { en: 'Generative-AI learning platform.', fr: 'Plateforme d’apprentissage par l’IA générative.' },
+    summary: { en: 'Generative-AI learning platform, selected for Sonatel’s LabIN programme.', fr: 'Plateforme d’apprentissage par l’IA générative, sélectionnée au programme LabIN de Sonatel.' },
     status: 'delivered',
     link: { label: { en: 'Open the app', fr: 'Ouvrir l’application' }, url: 'https://revizia-africas-future-learn.lovable.app/' },
   },
   {
     id: 'xamloo',
     title: 'Xamloo',
-    summary: { en: 'Semantic search prototype over local data, built on Fireplexity.', fr: 'Prototype de recherche sémantique sur données locales, bâti sur Fireplexity.' },
+    summary: { en: 'AI-augmented web search engine built on Fireplexity, focused on Senegalese public and administrative information.', fr: 'Moteur de recherche web augmenté par IA, bâti sur Fireplexity, orienté vers les informations publiques et administratives sénégalaises.' },
     status: 'paused',
   },
 ];
@@ -782,20 +782,50 @@ export const stack: { groups: StackGroup[]; trends: Item2[] } = {
     },
     {
       id: 'ai',
-      title: { en: 'AI & GenAI', fr: 'IA & GenAI' },
+      title: { en: 'GenAI & agents', fr: 'IA générative & agents' },
       items: [
         { en: 'RAG (hybrid search BM25 + RRF)', fr: 'RAG (recherche hybride BM25 + RRF)' },
         { en: 'AI agents (ReAct, LangGraph)', fr: 'Agents IA (ReAct, LangGraph)' },
-        'AI agent harness', 'MCP / FastMCP', 'LangChain', 'CrewAI', 'OpenAI', 'Ollama',
+        'CrewAI', 'AI agent harness', 'MCP / FastMCP', 'LangChain',
         { en: 'Embeddings, Qdrant, ChromaDB', fr: 'Embeddings, Qdrant, ChromaDB' },
         'Docling', 'NL-to-SQL',
         { en: 'Machine learning (LightGBM)', fr: 'Machine learning (LightGBM)' },
-        { en: 'LLM evaluation', fr: 'Évaluation LLM' },
-        { en: 'LLM guardrails', fr: 'Garde-fous LLM' },
-        { en: 'Tracing (Phoenix)', fr: 'Traçabilité (Phoenix)' },
+        { en: 'Rust (performance-critical components)', fr: 'Rust (composants critiques en performance)' },
         'FastAPI', 'n8n',
       ],
-      keywords: 'ai genai llm rag agents retrieval embeddings vector mcp langgraph evaluation',
+      keywords: 'ai genai llm rag agents retrieval embeddings vector mcp langgraph crewai rust',
+    },
+    {
+      id: 'llm',
+      title: { en: 'LLMs, inference & multi-model orchestration', fr: 'LLM, inférence & orchestration multi-modèles' },
+      items: [
+        'Llama', 'Qwen', 'Mistral', 'Gemma', 'GPT', 'Claude', 'Gemini',
+        'OpenAI API', 'Anthropic API', 'Google Gemini API', 'GroqCloud',
+        { en: 'LiteLLM (gateway, fallback, quotas & costs)', fr: 'LiteLLM (passerelle, fallback, quotas et coûts)' },
+        'Ollama', 'llama.cpp', 'Open WebUI', 'vLLM', 'SGLang', 'Vercel AI SDK',
+        'Function calling', 'Structured outputs',
+      ],
+      keywords: 'llm models inference serving gateway litellm ollama llama.cpp open webui vllm sglang mistral gemma llama qwen gpt claude gemini groq vercel ai sdk function calling structured outputs multi-model orchestration',
+    },
+    {
+      id: 'finetune',
+      title: { en: 'Fine-tuning & LLM adaptation', fr: 'Fine-tuning & adaptation LLM' },
+      items: [
+        'PyTorch', 'Hugging Face Transformers', 'PEFT (LoRA / QLoRA)', 'TRL', 'bitsandbytes',
+        'Unsloth', 'LLaMA-Factory', 'Axolotl', 'SFT', 'DPO', 'GRPO',
+        { en: 'Knowledge distillation', fr: 'Distillation maître–élève' },
+      ],
+      keywords: 'fine-tuning finetuning lora qlora peft trl sft dpo grpo distillation unsloth axolotl llama-factory pytorch transformers',
+    },
+    {
+      id: 'llmops',
+      title: { en: 'Observability, evaluation & LLMOps', fr: 'Observabilité, évaluation & LLMOps' },
+      items: [
+        'Arize Phoenix', 'OpenTelemetry', 'Langfuse', 'LangSmith', 'Ragas', 'DeepEval', 'MLflow', 'Weights & Biases',
+        { en: 'LLM evaluation', fr: 'Évaluation LLM' },
+        { en: 'LLM guardrails', fr: 'Garde-fous LLM' },
+      ],
+      keywords: 'observability tracing evaluation llmops monitoring phoenix opentelemetry langfuse langsmith ragas deepeval mlflow wandb weights biases hallucinations latency costs guardrails',
     },
     {
       id: 'devops',
@@ -817,8 +847,6 @@ export const stack: { groups: StackGroup[]; trends: Item2[] } = {
   // Followed closely, not presented as delivered work.
   trends: [
     { en: 'Agentic AI', fr: 'IA agentique' },
-    { en: 'LLM fine-tuning (LoRA)', fr: 'Fine-tuning de LLM (LoRA)' },
-    'LLMOps',
     { en: 'Agentic RAG', fr: 'RAG agentique' },
     { en: 'Context engineering', fr: 'Ingénierie du contexte' },
   ],
